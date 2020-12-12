@@ -219,7 +219,7 @@ I really enjoy writing in Markdown because of the focus on writing content that 
 [archer]: https://en.wikipedia.org/wiki/Archer_%282009_TV_series%29
 [gfm]: https://github.github.com/gfm/
 
-_I wrote the first draft of this article in Markdown. You can file a copy of the file [here](https://drive.google.com/file/d/16bg_tLdEJaTRdNclmfB23usqdyyHxfE0/view?usp=sharing)._
+_I wrote the first draft of this article in Markdown. You can find a copy of the file [here](https://drive.google.com/file/d/16bg_tLdEJaTRdNclmfB23usqdyyHxfE0/view?usp=sharing)._
 
 ---
 
