@@ -190,11 +190,7 @@ What makes Markdown simple compared to work is its limitations. The temptation w
 
 Adding diagrams (such as [Mermaid](https://mermaid-js.github.io/mermaid/#/) included in [Typora](typora)) seems useful, but has the downside of reducing the readability of the Markdown text except for the simplest of diagrams.
 
-```mermaid
-graph LR
-  A((A)) --> B((B))
-  A --> C((C))
-```
+![Example of a Mermaid flowchart](/assets/mermaid-flowchart.png)
 
 _Example of a Mermaid flowchart._
 
