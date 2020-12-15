@@ -14,6 +14,8 @@ I _love_ writing in [Markdown](https://en.wikipedia.org/wiki/Markdown). It is si
 
 In this article, I go into why I like Markdown and why I would like to see support for it in all applications.
 
+$$  $$
+
 ## What it is and a brief history
 
 Does anyone remember old word processing applications (or programs) from the 1980s that ran on [MS-DOS](https://en.wikipedia.org/wiki/MS-DOS) like [WordStar](https://en.wikipedia.org/wiki/WordStar) and [WordPerfect](https://www.wordperfect.com/en/)? Before the dominance of [Microsoft Word][msword] and [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG) on [Microsoft Windows](https://en.wikipedia.org/wiki/Microsoft_Windows) became the _de facto_ standard for document writing?
@@ -63,7 +65,7 @@ The basics of using Markdown are straightforward.
 
   * Numbered lists use a number followed by a full stop — Markdown will ignore the actual number you type, however
 
-```mark
+```markdown
 1. Point 1
 3. Point 2
 3. Point 3
@@ -74,6 +76,7 @@ The basics of using Markdown are straightforward.
 
 ```markdown
 > This is how you do a block quote
+
 ```
 
 ---
@@ -82,10 +85,12 @@ The basics of using Markdown are straightforward.
 
 ---
 
+### Analytics and maths
+
 The popular analytical tools [Jupyter](https://jupyter.org) and [RStudio](https://rstudio.com) both use Markdown for writing reports that can include code, calculations, charts and other enhancements.
 
-The other killer feature for someone like me is support for mathematics in the form of [LaTeX][latex] commands.
-So it is easy to include a maths equation like $y = X\beta + \epsilon$.
+The other killer feature for someone like me is many versions support mathematics in the form of [LaTeX][latex] commands.
+So it is easy to include a maths equation like $ y = X\beta + \epsilon $.
 
 ## Why I like it
 
@@ -190,9 +195,22 @@ What makes Markdown simple compared to work is its limitations. The temptation w
 
 Adding diagrams (such as [Mermaid](https://mermaid-js.github.io/mermaid/#/) included in [Typora](typora)) seems useful, but has the downside of reducing the readability of the Markdown text except for the simplest of diagrams.
 
-![Example of a Mermaid flowchart](/assets/mermaid-flowchart.png)
+
+
+```mermaid!
+graph LR
+  A((A)) --> B((B))
+  A --> C((C))
+```
 
 _Example of a Mermaid flowchart._
+
+```mermaid
+graph LR
+  A((A)) --> B((B))
+  A --> C((C))
+```  
+_The text version of the Mermaid flowchart is much less readable._
 
 ## What I want for Markdown
 
