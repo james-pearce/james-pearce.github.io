@@ -84,8 +84,8 @@ The basics of using Markdown are straightforward.
 
 The popular analytical tools [Jupyter](https://jupyter.org) and [RStudio](https://rstudio.com) both use Markdown for writing reports that can include code, calculations, charts and other enhancements.
 
-The other killer feature for someone like me is support for mathematics in the form of [$\LaTeX$][latex] commands.
-So it is easy to include a maths equation like $$y = X\beta + \epsilon$$.
+The other killer feature for someone like me is support for mathematics in the form of [LaTeX][latex] commands.
+So it is easy to include a maths equation like $y = X\beta + \epsilon$.
 
 ## Why I like it
 
