@@ -34,6 +34,8 @@ plugins:
   - jekyll-feed
   - jekyll-include-cache
 
+markdown: kramdown
+
 kramdown:
   math_engine: mathjax
 
