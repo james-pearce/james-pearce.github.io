@@ -28,9 +28,11 @@ twitter_username:
 github_username:
 
 # Build settings
-theme: minima
+# theme: minima
+remote_theme: "mmistakes/minimal-mistakes@4.21.0"
 plugins:
   - jekyll-feed
+  - jekyll-include-cache
 
 kramdown:
   math_engine: mathjax

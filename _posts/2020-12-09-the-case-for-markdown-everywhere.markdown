@@ -196,7 +196,7 @@ _Example of a Mermaid flowchart._
 
 ## What I want for Markdown
 
-I love Markdown, and my world would be better if Mardown were supported **everywhere**!
+I love Markdown, and my world would be better if Markdown were supported **everywhere**!
 
 By that I mean _all_ writing applications support Markdown syntax and extensions. Typing Markdown syntax would convert to the document’s format. Copy-and-paste commands would copy to Markdown, and intelligently convert pasted Markdown to the displayed formate.
 
