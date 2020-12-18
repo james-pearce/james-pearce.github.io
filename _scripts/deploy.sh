@@ -1,4 +1,4 @@
-#! bin/bash
+#!/bin/bash
 # _scripts/deploy.sh
 
 DEPLOY_DIR=$(mktemp -d)
