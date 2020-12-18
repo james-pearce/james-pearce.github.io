@@ -31,4 +31,4 @@ jobs:
           destination: /
       - run:
           name: Deploy
-          command: scripts/deploy.sh
+          command: _scripts/deploy.sh
