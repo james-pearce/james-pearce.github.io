@@ -13,7 +13,7 @@ jobs:
           keys:
             - v1-bundle-\{\{ checksum "Gemfile.lock" \}\}
 #      - run: bundle update --bundler
-      - run: gem install bundler:2.1.4 --path vendor/bundle
+      - run: gem install bundler:2.1.4 
       - run: bundle install --path vendor/bundle
       - save_cache:
           paths:
