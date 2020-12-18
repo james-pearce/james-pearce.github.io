@@ -275,8 +275,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler (~> 2.1.4)
   github-pages
   html-proofer
+  jekyll (~> 3.9.0)
   jekyll-feed (~> 0.12)
   jekyll-include-cache
   jekyll-spaceship
@@ -284,6 +286,9 @@ DEPENDENCIES
   tzinfo (~> 1.2)
   tzinfo-data
   wdm (~> 0.1.1)
+
+RUBY VERSION
+   ruby 2.6.3p62
 
 BUNDLED WITH
    2.1.4

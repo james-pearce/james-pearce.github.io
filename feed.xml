@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-12-18T10:07:58+00:00</updated><id>/feed.xml</id><title type="html">Data Science in the Wild</title><subtitle>Better techniques for getting valuable decisions from data.</subtitle><entry><title type="html">The case for Markdown everywhere</title><link href="/markdown/2020/12/08/the-case-for-markdown-everywhere.html" rel="alternate" type="text/html" title="The case for Markdown everywhere" /><published>2020-12-08T22:00:00+00:00</published><updated>2020-12-08T22:00:00+00:00</updated><id>/markdown/2020/12/08/the-case-for-markdown-everywhere</id><content type="html" xml:base="/markdown/2020/12/08/the-case-for-markdown-everywhere.html">&lt;h1 id=&quot;why-i-love-markdown-and-want-to-see-its-use-become-more-widespread&quot;&gt;&lt;em&gt;Why I love Markdown and want to see its use become more widespread&lt;/em&gt;&lt;/h1&gt;
+
+&lt;h2 id=&quot;intro&quot;&gt;Intro&lt;/h2&gt;
+
+&lt;p&gt;I &lt;em&gt;love&lt;/em&gt; writing in &lt;a href=&quot;https://en.wikipedia.org/wiki/Markdown&quot;&gt;Markdown&lt;/a&gt;. It is simple to write, easy to remember and is widely adopted. When writing in Markdown, all I need to concentrate on is the writing and the keyboard. Markdown files are readable as text: everybody understands what you mean when you surround a word by asterisks — like **really**.&lt;/p&gt;
+
+&lt;p&gt;In this article, I go into why I like Markdown and why I would like to see support for it in all applications.&lt;/p&gt;
+
+&lt;p&gt;$$  $$&lt;/p&gt;
+
+&lt;h2 id=&quot;what-it-is-and-a-brief-history&quot;&gt;What it is and a brief history&lt;/h2&gt;
+
+&lt;p&gt;Does anyone remember old word processing applications (or programs) from the 1980s that ran on &lt;a href=&quot;https://en.wikipedia.org/wiki/MS-DOS&quot;&gt;MS-DOS&lt;/a&gt; like &lt;a href=&quot;https://en.wikipedia.org/wiki/WordStar&quot;&gt;WordStar&lt;/a&gt; and &lt;a href=&quot;https://www.wordperfect.com/en/&quot;&gt;WordPerfect&lt;/a&gt;? Before the dominance of &lt;a href=&quot;https://en.wikipedia.org/wiki/Microsoft_Word&quot;&gt;Microsoft Word&lt;/a&gt; and &lt;a href=&quot;https://en.wikipedia.org/wiki/WYSIWYG&quot;&gt;WYSIWYG&lt;/a&gt; on &lt;a href=&quot;https://en.wikipedia.org/wiki/Microsoft_Windows&quot;&gt;Microsoft Windows&lt;/a&gt; became the &lt;em&gt;de facto&lt;/em&gt; standard for document writing?&lt;/p&gt;
+
+&lt;p&gt;You wrote the document using special characters for formatting. If you wanted to preview the final product, you had to render the document to print or a special preview screen. But as long as you knew the characters to type, it was remarkably quick and efficient to compose a document. You were not stuck in the constant hell of switching between keyboard and mouse to compose and format a document.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload.wikimedia.org/wikipedia/en/e/e3/Wordstar_Screenshot.png&quot; alt=&quot;Some of the special characters appearing in a WordStar document on MS-DOS&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Some of the special characters appearing in a WordStar document on MS-DOS.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload.wikimedia.org/wikipedia/commons/0/00/Compaq_Portable_and_Wordperfect.JPG&quot; alt=&quot;WordPerfect was perfect for word processing when computers looked like Archer technology&quot; style=&quot;zoom:80%;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;WordPerfect was perfect for word processing when computers looked like &lt;a href=&quot;https://en.wikipedia.org/wiki/Archer_%282009_TV_series%29&quot;&gt;Archer&lt;/a&gt; technology.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Just while I am digressing … I recall from my childhood that word processors used to be actual computers themselves — computers that ran only one application. Offices had banks of typists who had upgraded from electric typewriters to word processors. I think the old equipment looks great now in a retro chic way.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i.pinimg.com/originals/28/74/50/2874505128a2430de587030671d6d413.jpg&quot; alt=&quot;A Wang word processor really does have that Archer vibe&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;A Wang word processor really does have that Archer vibe.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cdn.newsday.com/polopoly_fs/1.5178733.1461864381!/httpImage/image.jpg_gen/derivatives/display_960/image.jpg&quot; alt=&quot;The computers from Archer feature state of the art mechanical keyboards&quot; style=&quot;zoom:80%;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;The computers from Archer feature state of the art mechanical keyboards.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;According to the &lt;a href=&quot;https://en.wikipedia.org/wiki/Markdown&quot;&gt;Internet&lt;/a&gt;, Markdown was created in 2004 by &lt;a href=&quot;https://en.wikipedia.org/wiki/John_Gruber&quot;&gt;John Gruber&lt;/a&gt; and the late, troubled &lt;a href=&quot;https://en.wikipedia.org/wiki/Aaron_Swartz&quot;&gt;Aaron Swartz&lt;/a&gt;. The aim: a text format that could convert easily to valid &lt;a href=&quot;https://en.wikipedia.org/wiki/HTML&quot;&gt;HTML&lt;/a&gt; or &lt;a href=&quot;https://en.wikipedia.org/wiki/XHTML&quot;&gt;XHTML&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The name ‘Markdown’ is a simple play on the term ‘markup’. &lt;a href=&quot;https://en.wikipedia.org/wiki/Markup_language&quot;&gt;‘Markup’&lt;/a&gt; refers to a language that describes a document’s formatting separately from its content. This makes it straightforward to change styles. Examples of popular markup languages are &lt;a href=&quot;https://en.wikipedia.org/wiki/HTML&quot;&gt;HTML&lt;/a&gt; and &lt;a href=&quot;https://en.wikipedia.org/wiki/LaTeX&quot;&gt;LaTeX&lt;/a&gt; ($\LaTeX$).&lt;/p&gt;
+
+&lt;p&gt;Both of these languages have not achieved their full potential as markup languages, mainly because they have evolved to find widespread use in their specific niches beyond a simple requirement for document processing.&lt;/p&gt;
+
+&lt;h2 id=&quot;where-can-i-use-it-and-what-is-it-good-for&quot;&gt;Where can I use it and what is it good for?&lt;/h2&gt;
+
+&lt;p&gt;Markdown has risen to prominence largely through its use on &lt;a href=&quot;github.com&quot;&gt;GitHub&lt;/a&gt;, where is used for README files. &lt;a href=&quot;https://github.github.com/gfm/&quot;&gt;Github has its own flavour&lt;/a&gt; and has &lt;a href=&quot;https://guides.github.com/features/mastering-markdown/&quot;&gt;extensive guides&lt;/a&gt; to help learn how best to use it. But learning Markdown is not that hard!&lt;/p&gt;
+
+&lt;p&gt;The basics of using Markdown are straightforward.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#&lt;/code&gt; for heading level 1, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;##&lt;/code&gt; heading level 2 and so one up to level 6 (please do not use this — I cannot keep your overcomplicated document structure in my head)&lt;/li&gt;
+  &lt;li&gt;Surround text to be displayed in &lt;em&gt;italics&lt;/em&gt; by a single underscore (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_italics_&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;Similarly, use two asterisks (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;**bold**&lt;/code&gt;) for &lt;strong&gt;bold&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;Bullet points are created using two spaces and an asterisk&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-markdown highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;  *&lt;/span&gt; bullet point 1
+&lt;span class=&quot;p&quot;&gt;  *&lt;/span&gt; bullet point 2
+&lt;span class=&quot;p&quot;&gt;    -&lt;/span&gt; subpoint 2.1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Numbered lists use a number followed by a full stop — Markdown will ignore the actual number you type, however&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-markdown highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;1.&lt;/span&gt; Point 1
+&lt;span class=&quot;p&quot;&gt;3.&lt;/span&gt; Point 2
+&lt;span class=&quot;p&quot;&gt;3.&lt;/span&gt; Point 3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Unformatted text is specified using a backquote `; you can format blocks of text using matching sets of triple backquotes (```)&lt;/li&gt;
+  &lt;li&gt;Block quotes of text are specified using a greater-than sign preceding the text&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-markdown highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gt&quot;&gt;&amp;gt; This is how you do a block quote&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;This is how you do a block quote&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;analytics-and-maths&quot;&gt;Analytics and maths&lt;/h3&gt;
+
+&lt;p&gt;The popular analytical tools &lt;a href=&quot;https://jupyter.org&quot;&gt;Jupyter&lt;/a&gt; and &lt;a href=&quot;https://rstudio.com&quot;&gt;RStudio&lt;/a&gt; both use Markdown for writing reports that can include code, calculations, charts and other enhancements.&lt;/p&gt;
+
+&lt;p&gt;The other killer feature for someone like me is many versions support mathematics in the form of &lt;a href=&quot;https://en.wikipedia.org/wiki/LaTeX&quot;&gt;LaTeX&lt;/a&gt; commands.
+So it is easy to include a maths equation like $ y = X\beta + \epsilon $.&lt;/p&gt;
+
+&lt;h2 id=&quot;why-i-like-it&quot;&gt;Why I like it&lt;/h2&gt;
+
+&lt;h3 id=&quot;structured-documents&quot;&gt;Structured documents&lt;/h3&gt;
+
+&lt;p&gt;Using Markdown, or even markup languages, it is easy to create structured documents and &lt;em&gt;much harder&lt;/em&gt; to hard-code document-specific formatting than in &lt;a href=&quot;https://en.wikipedia.org/wiki/Microsoft_Word&quot;&gt;Word&lt;/a&gt;. This can be both a good and bad thing; I like it because it forces a writer to focus on the content rather than how the document looks.&lt;/p&gt;
+
+&lt;h3 id=&quot;workflow&quot;&gt;Workflow&lt;/h3&gt;
+
+&lt;p&gt;I also find it much more intuitive and less disruptive to my workflow to include any formatting as characters while I type. Unlike &lt;a href=&quot;https://en.wikipedia.org/wiki/Microsoft_Word&quot;&gt;MS Word&lt;/a&gt;, I am not jumping around between the keyboard and the mouse for formatting. This becomes even more important when you are working from a laptop and navigating between its keyboard and trackpad.&lt;/p&gt;
+
+&lt;p&gt;For those series writers, some software tools allow have a &lt;strong&gt;focus mode&lt;/strong&gt; to help you concentrate. &lt;a href=&quot;https://lifehacker.com/i-still-use-plain-text-for-everything-and-i-love-it-1758380840&quot;&gt;Many old-school writers prefer writing using text editors only.&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;separation-of-text-and-formatting&quot;&gt;Separation of text and formatting&lt;/h3&gt;
+
+&lt;p&gt;Markdown describes the context and the structure of the formatting only, unlike with word processors like &lt;a href=&quot;https://en.wikipedia.org/wiki/Microsoft_Word&quot;&gt;MS Word&lt;/a&gt;, where the formatting is enmeshed in the document itself. The separation makes it easy to change styles. &lt;a href=&quot;https://en.wikipedia.org/wiki/Separation_of_content_and_presentation&quot;&gt;This is in line with good design practices.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/Text-and-style-together.svg&quot; alt=&quot;Text and style confounded&quot; style=&quot;zoom:80%;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Microsoft_Word&quot;&gt;MS Word&lt;/a&gt; combines text and style in the same document.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/Text-and-style-separate.svg&quot; alt=&quot;Text and style separate&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Good design dictates that content formatting and style should be separate.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;markdown-files-are-plain-text&quot;&gt;Markdown files are plain text&lt;/h3&gt;
+
+&lt;p&gt;Markdown files are text. This makes them &lt;strong&gt;extremely portable&lt;/strong&gt; and editable with any text editor. But of course there are specialist tools that give you a bit more. Two of my favourites are &lt;a href=&quot;https://typora.io&quot;&gt;&lt;strong&gt;Typora&lt;/strong&gt;&lt;/a&gt; and  &lt;a href=&quot;https://stackedit.io&quot;&gt;StackEdit&lt;/a&gt;. Typora is available for Linux, Mac OS and Windows. StackEdit runs in the browser and integrates with your online storage account.&lt;/p&gt;
+
+&lt;h3 id=&quot;support-for-html&quot;&gt;Support for HTML&lt;/h3&gt;
+
+&lt;p&gt;Markdown replaces the HTML characters &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; with character entity references. This means you can do neat things like this: this text is &lt;span style=&quot;color:blue&quot;&gt;blue&lt;/span&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;span style='color:blue'&amp;gt;blue&amp;lt;/span&amp;gt;&lt;/code&gt;) or ½ (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;amp;frac12;&lt;/code&gt;) . HTML support is very useful for training documentation and writing technical manuals, for example, to type things like &lt;kbd&gt;Enter&lt;/kbd&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;kbd&amp;gt;Enter&amp;lt;/kbd&amp;gt;&lt;/code&gt;). Because it resolves to HTML, it is also great for designing simple websites using tools like &lt;a href=&quot;https://jekyllrb.com&quot;&gt;Jekyll&lt;/a&gt;. Using HTML makes Markdown &lt;em&gt;a little&lt;/em&gt; less usable, however.&lt;/p&gt;
+
+&lt;h3 id=&quot;writing-code-blocks&quot;&gt;Writing code blocks&lt;/h3&gt;
+
+&lt;p&gt;Markdown is also great for writing code; it supports a whole bunch of languages. Here is an example of how it renders  Python code.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;add_one&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# return the result
+&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;Example of a basic Python function rendered in Markdown.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;presentation-slides&quot;&gt;Presentation slides&lt;/h3&gt;
+
+&lt;p&gt;There are tools and frameworks that let you write Markdown to generate a series of slides and presentations. These can be pretty good and highly recommended when you need to include code in your presentation. The downside is that where you want diagrams and images, it seems less than natural to include them in Markdown — you pretty much end up with a frequent write–display–review workflow. Note though, that this mode of work is &lt;em&gt;very&lt;/em&gt; different from composing presentations in &lt;a href=&quot;https://www.microsoft.com/en-us/microsoft-365/powerpoint&quot;&gt;PowerPoint&lt;/a&gt; or &lt;a href=&quot;https://prezi.com&quot;&gt;Prezi&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;My favourite way of doing this is to use &lt;a href=&quot;https://rstudio.com&quot;&gt;RStudio&lt;/a&gt; to create &lt;a href=&quot;https://bookdown.org/yihui/rmarkdown/revealjs.html&quot;&gt;revealjs&lt;/a&gt; presentations.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-could-make-it-better&quot;&gt;What could make it better&lt;/h2&gt;
+
+&lt;p&gt;So you get that I love Markdown. But where could it be better? Improved support for tables, styles and images could improve Markdown, but I do not have great suggestions on how to design the improvements I would like to see.&lt;/p&gt;
+
+&lt;h3 id=&quot;tables&quot;&gt;Tables&lt;/h3&gt;
+
+&lt;p&gt;Writing tables in Markdown is okay. You basically write a text-based table like this.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;| fruit  | colour | rating |
+|--------|--------|-------:|
+| banana | yellow | 10     |
+| orange | orange |  5     |
+| lemon  | yellow |  2     |
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You do not even need to align all the heading and columns if you are lazy.&lt;/p&gt;
+
+&lt;p&gt;It will display as a nicely formatted table like this:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;fruit&lt;/th&gt;
+      &lt;th&gt;colour&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;rating&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;banana&lt;/td&gt;
+      &lt;td&gt;yellow&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;10&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;orange&lt;/td&gt;
+      &lt;td&gt;orange&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;lemon&lt;/td&gt;
+      &lt;td&gt;yellow&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;I do like this — a lot. But sometimes you need detailed tables with multiple rows in a cell or merged cells. Markdown cannot cope with this natively. The workaround is to write the table in HTML, but it is painful (unless you use a helper tool) and the raw text is no longer readable.&lt;/p&gt;
+
+&lt;h3 id=&quot;css&quot;&gt;CSS&lt;/h3&gt;
+
+&lt;p&gt;CSS can be used to provide custom styling and even some actions that control HTML. Without a good CSS tool, much of this is alien to me (being a simple user), so I am stuck with what we get from the tools as they convert the Markdown syntax to a display format. But some of you will be more capable than I am of combining the CSS with the Markdown converter to create nice looking outputs.&lt;/p&gt;
+
+&lt;h3 id=&quot;images&quot;&gt;Images&lt;/h3&gt;
+
+&lt;p&gt;Image handling can be fiddly. If you want to include images as they are, it is straightforward — &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;![image text](image location)&lt;/code&gt;. But to caption or zoom or anything else that might be nice, you need to go into HTML and use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;img&amp;gt;&lt;/code&gt; tags. Again this messes with the readability of the raw text.&lt;/p&gt;
+
+&lt;p&gt;The other thing I do not like about images is how they are handled in the rendered documents. In some implementations of Markdown to HTML (or other destinations), the hard-coded links to images are maintained. This does not make a lot of sense for local files. You essentially need to load these to a destination that is accessible wherever the document is viewed.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-would-make-it-worse&quot;&gt;What would make it worse&lt;/h2&gt;
+
+&lt;p&gt;What makes Markdown great for writing is its simplicity, its portability and its readability. If any extensions to the language change this, it will be for the worse.&lt;/p&gt;
+
+&lt;h3 id=&quot;portability&quot;&gt;Portability&lt;/h3&gt;
+
+&lt;p&gt;One of the enhancements that could reduce its portability is fragmentation into too many variants each with their own syntax. There are already several versions of Markdown in the world: two are &lt;a href=&quot;https://github.github.com/gfm/&quot;&gt;GitHub-Flavored Markdown&lt;/a&gt; and &lt;a href=&quot;https://michelf.ca/projects/php-markdown/extra/&quot;&gt;PHP Markdown Extra&lt;/a&gt; (which adds additional features not available in standard Markdown). If there are two many variants of Markdown its portability is reduced. You will not have a reliable way of knowing if a particular Markdown file will display correctly in another variant.&lt;/p&gt;
+
+&lt;h3 id=&quot;simplicity-and-readability&quot;&gt;Simplicity and readability&lt;/h3&gt;
+
+&lt;p&gt;What makes Markdown simple compared to work is its limitations. The temptation will be to keep adding things to it: additional style elements, diagrams, improvements and so on. Additional style elements like CSS encroaching into the Markdown syntax reduces it simplicity &lt;em&gt;and&lt;/em&gt; the separate of content and style.&lt;/p&gt;
+
+&lt;p&gt;Adding diagrams (such as &lt;a href=&quot;https://mermaid-js.github.io/mermaid/#/&quot;&gt;Mermaid&lt;/a&gt; included in &lt;a href=&quot;typora&quot;&gt;Typora&lt;/a&gt;) seems useful, but has the downside of reducing the readability of the Markdown text except for the simplest of diagrams.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;mermaid&quot; src=&quot;https://mermaid.ink/svg/eyJjb2RlIjoiZ3JhcGggTFJcbkEoKEEpKSAtLT4gQigoQikpXG5BIC0tPiBDKChDKSkiLCJtZXJtYWlkIjpudWxsfQ&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Example of a Mermaid flowchart.&lt;/em&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;graph LR
+  A((A)) --&amp;gt; B((B))
+  A --&amp;gt; C((C))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;The text version of the Mermaid flowchart is much less readable.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;what-i-want-for-markdown&quot;&gt;What I want for Markdown&lt;/h2&gt;
+
+&lt;p&gt;I love Markdown, and my world would be better if Markdown were supported &lt;strong&gt;everywhere&lt;/strong&gt;!&lt;/p&gt;
+
+&lt;p&gt;By that I mean &lt;em&gt;all&lt;/em&gt; writing applications support Markdown syntax and extensions. Typing Markdown syntax would convert to the document’s format. Copy-and-paste commands would copy to Markdown, and intelligently convert pasted Markdown to the displayed formate.&lt;/p&gt;
+
+&lt;p&gt;I want to be able to type &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;**really**&lt;/code&gt; in every application I use and see &lt;strong&gt;really&lt;/strong&gt;. That includes &lt;a href=&quot;msword&quot;&gt;Word&lt;/a&gt; — which is still the standard despite open-source and free document alternatives (&lt;em&gt;kudos!&lt;/em&gt;) and others like &lt;a href=&quot;outlook&quot;&gt;Outlook&lt;/a&gt;, &lt;a href=&quot;https://teams.microsoft.com/&quot;&gt;Teams&lt;/a&gt;, &lt;a href=&quot;[https://www.onenote.com](https://www.onenote.com/)&quot;&gt;OneNote&lt;/a&gt;, wikis, &lt;a href=&quot;[https://www.wix.com](https://www.wix.com/)&quot;&gt;Wix&lt;/a&gt;, &lt;a href=&quot;[https://medium.com](https://medium.com/)&quot;&gt;Medium&lt;/a&gt;, &lt;a href=&quot;https://www.atlassian.com/software/confluence&quot;&gt;Atlassian’s Confluence&lt;/a&gt;, &lt;a href=&quot;https://gsuite.google.com/products/gmail/&quot;&gt;Gmail&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Apple_Mail&quot;&gt;Apple mail&lt;/a&gt;, &lt;a href=&quot;https://evernote.com/&quot;&gt;Evernote&lt;/a&gt;, &lt;a href=&quot;https://docs.google.com/&quot;&gt;Google docs&lt;/a&gt; and others. (To be fair, it kind of works in some of these, and in others you can apply extensions that add some of the functionality.)&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;I really enjoy writing in Markdown because of the focus on writing content that is gives me. There are a couple of improvements that could be made, but given the opportunity of enhancing Markdown at the expense of its readability and simplicity, I would gladly keep it as is.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;I wrote the first draft of this article in Markdown. You can find a copy of the file &lt;a href=&quot;https://drive.google.com/file/d/16bg_tLdEJaTRdNclmfB23usqdyyHxfE0/view?usp=sharing&quot;&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;more-information&quot;&gt;More information&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;ttps://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python&quot;&gt;Click here to access my &lt;strong&gt;free course&lt;/strong&gt; on sentiment analysis.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;© 2020 James Pearce, 3 Crowns Consulting.&lt;/p&gt;</content><author><name></name></author><category term="markdown" /><summary type="html">Why I love Markdown and want to see its use become more widespread</summary></entry><entry><title type="html">You should be using Azure Machine Learning designer</title><link href="/machine-learning/azure/2020/11/09/You-should-be-using-Azure-ML-designer.html" rel="alternate" type="text/html" title="You should be using Azure Machine Learning designer" /><published>2020-11-09T22:00:00+00:00</published><updated>2020-11-09T22:00:00+00:00</updated><id>/machine-learning/azure/2020/11/09/You-should-be-using-Azure-ML-designer</id><content type="html" xml:base="/machine-learning/azure/2020/11/09/You-should-be-using-Azure-ML-designer.html">&lt;h1 id=&quot;a-modern-update-with-a-familiar-look-and-feel-gives-data-scientists-the-best-of-both-worlds&quot;&gt;&lt;em&gt;A modern update with a familiar look and feel gives data scientists the best of both worlds&lt;/em&gt;&lt;/h1&gt;
+
+&lt;p&gt;I have been a strong advocate of Microsoft’s &lt;a href=&quot;https://studio.azureml.net/&quot;&gt;Azure Machine Learning Studio (classic)&lt;/a&gt; since its release in 2015. It is a great tool, parts of it remain relevant and it is an excellent platform for students new to machine learning.&lt;/p&gt;
+
+&lt;p&gt;It has an outstanding and its intuitive visual interface make it easy to use. It can be extended to be as powerful as you need it to be with R and Python scripts. Its ties to R are strong — this reflects Microsoft’s investment in R at the time. Microsoft published a slew of &lt;a href=&quot;https://gallery.azure.ai/&quot;&gt;galleries and examples&lt;/a&gt; that made Azure ML Studio an exceptional machine learning resource. It was — and still is — a go-to place to see how someone else has solved a problem in a way that is easy to understand.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/azure ML classic 01.png&quot; alt=&quot;A linear regression experiment to predict car prices in Azure Machine Learning Studio (classic)&quot; /&gt;&lt;br /&gt;
+&lt;em&gt;A linear regression experiment to predict car prices in Azure Machine Learning Studio (classic)&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Fast forward to late 2020 and the world has moved on. Microsoft has launched &lt;a href=&quot;https://azure.microsoft.com/en-us/services/machine-learning-service/&quot;&gt;an impressive range of machine learning services under the Azure banner&lt;/a&gt;, with strong ties to Python libraries. &lt;a href=&quot;https://azure.microsoft.com/en-us/pricing/details/machine-learning/&quot;&gt;&lt;strong&gt;They have now made them essentially free.&lt;/strong&gt;&lt;/a&gt; The focus of machine learning has tilted slightly &lt;a href=&quot;https://www.kdnuggets.com/2019/05/poll-top-data-science-machine-learning-platforms.html&quot;&gt;towards Python and away from R&lt;/a&gt;. Microsoft has started to deprecate its development in Azure Machine Learning Studio (classic) in favour of its new suite of machine learning services. The direction for R is through &lt;a href=&quot;https://docs.microsoft.com/en-us/sql/machine-learning/sql-server-machine-learning-services&quot;&gt;integration with SQL Server&lt;/a&gt; (named SQL Server Machine Learning Services).&lt;/p&gt;
+
+&lt;p&gt;Is it me, or are the names confusing?&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Azure  Machine Learning Studio  (classic)&lt;/th&gt;
+      &lt;th&gt;A  visual machine learning environment&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Azure  Machine Learning Services&lt;/td&gt;
+      &lt;td&gt;Azure-based  API and integrated Python libraries for the full machine learning lifecycle&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;SQL Server  Machine Learning Services&lt;/td&gt;
+      &lt;td&gt;R  and Python machine learning in SQL Server&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Come on Microsoft, bring back names we can relate to. Like &lt;a href=&quot;https://www.theverge.com/2019/3/22/18276923/microsoft-clippy-microsoft-teams-stickers-removal&quot;&gt;Clippy&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://cdn.windowsreport.com/wp-content/uploads/2014/10/clippy-windows-8-10.jpg&quot; alt=&quot;Fans of Apple were envious of the Windows-only Clippy&quot; /&gt;&lt;br /&gt;
+&lt;em&gt;Fans of Apple were envious of the Windows-only Clippy&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;With all of this, faithful users were left with a choice: do I want ease of use or tight integration with Azure? You could have flexibility in Azure environments but were limited to code and the learning curve that comes with that. Or you could have easy development with a brilliant visual interface, but were limited in the Azure environments in terms of scale, compute, regions and storage for deploying models.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/how it was 2.png&quot; alt=&quot;The tradeoffs you had to make between Azure ML Studio and Azure ML Service.&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Enter the new visual interface for Azure Machine Learning known as (I think) &lt;a href=&quot;https://docs.microsoft.com/en-us/sql/machine-learning/sql-server-machine-learning-services&quot;&gt;Azure Machine Learning designer&lt;/a&gt; which is part of the new and equally-confusingly-named Azure Machine Learning Studio. If you are familiar with Azure Machine Learning Studio (classic), you will know how to use the new interface. It looks exactly the same &lt;em&gt;and&lt;/em&gt; it shares many features with its predecessor.&lt;/p&gt;
+
+&lt;p&gt;Look at the screen grab below of the new Azure Machine Learning designer interface: the interface we love is back — with upgrades!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/Azure ML designer.png&quot; alt=&quot;Azure Machine Learning designer&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Things are not quite the same. The ties with R have been replaced by stronger — and better — ties to Python. You have full control over your compute environment, and you have access to the full Azure run history of experiments. So you have flexibility with Azure, &lt;em&gt;plus&lt;/em&gt; a great visual coding interface which you probably already know.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/Azure run experiment.png&quot; alt=&quot;Details are available for your visual experiments.&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;To sum up, the new visual interface for Azure Machine Learning Service is a great addition to Microsoft’s Azure machine learning suite. You get the best of both worlds: power, flexibility and an intuitive interface &lt;strong&gt;plus&lt;/strong&gt; all the bells and whistles from the Azure Machine Learning suite. These include &lt;a href=&quot;https://docs.microsoft.com/en-us/azure/machine-learning/concept-automated-ml&quot;&gt;automated machine learning&lt;/a&gt;, &lt;a href=&quot;https://docs.microsoft.com/en-us/azure/machine-learning/how-to-machine-learning-interpretability&quot;&gt;interpretable machine learning&lt;/a&gt; and &lt;a href=&quot;&quot;&gt;model monitoring&lt;/a&gt;, all important capabilities for a modern machine learning suite.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/azure ml designer 2.png&quot; alt=&quot;azure ml designer 2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Now Azure has an option that gives you power and flexibility with a visual interface&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;free-sentiment-analysis-course&quot;&gt;Free sentiment analysis course&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python&quot;&gt;Click here to access my &lt;strong&gt;free course&lt;/strong&gt; on sentiment analysis.&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="machine-learning" /><category term="azure" /><summary type="html">A modern update with a familiar look and feel gives data scientists the best of both worlds</summary></entry><entry><title type="html">Like sentiment analysis can detect sarcasm!</title><link href="/nlp/sentiment/2020/11/07/like-Sentiment-analysis-can-detect-sarcasm.html" rel="alternate" type="text/html" title="Like sentiment analysis can detect sarcasm!" /><published>2020-11-07T22:00:00+00:00</published><updated>2020-11-07T22:00:00+00:00</updated><id>/nlp/sentiment/2020/11/07/like-Sentiment-analysis-can-detect-sarcasm</id><content type="html" xml:base="/nlp/sentiment/2020/11/07/like-Sentiment-analysis-can-detect-sarcasm.html">&lt;p&gt;&lt;em&gt;Automatic sentiment analysis of texts has historically struggled to handle sarcasm well. Have advances in machine learning techniques made inroads to the detection of sarcasm?&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;You may have heard about &lt;a href=&quot;https://en.wikipedia.org/wiki/Sentiment_analysis&quot;&gt;sentiment analysis&lt;/a&gt;. It is a technique that analyses text and tries to establish whether the emotional state of the person who wrote it was &lt;strong&gt;positive&lt;/strong&gt; or &lt;strong&gt;negative&lt;/strong&gt;. It is a powerful way of understanding whether tweets regarding your product are trending positively or negatively. In turn, you can use this as an early warning system for problems as they arise. And there are myriad other uses.&lt;/p&gt;
+
+&lt;p&gt;But English can be a strange language. One of the toughest jobs that automated sentiment detection has is when sarcasm is involved.&lt;/p&gt;
+
+&lt;p&gt;This is not surprising. Actual people can have difficulty in detecting sarcasm. Think of Sheldon from &lt;em&gt;Big Bang Theory&lt;/em&gt; or Sean Murphy from &lt;em&gt;The Good Doctor&lt;/em&gt;. (And some have argued that Alanis Morrisette cannot recognise irony, &lt;a href=&quot;https://www.theatlantic.com/notes/2016/05/alanis-morissette-recognizes-its-not-ironic/481875/&quot;&gt;but maybe those people are too pedantic&lt;/a&gt;.)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://znculturecast.files.wordpress.com/2013/03/dc056b4f8c9493f3c64e6e0a85382b31.jpeg&quot; style=&quot;zoom:67%;&quot; /&gt;&lt;br /&gt;
+&lt;em&gt;Dr Sheldon Cooper is really good at detecting sarcasm&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Consider the following quote.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;I really enjoyed this book and will recommend it to my friends and family.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This quote contains &lt;em&gt;positive&lt;/em&gt; words (‘enjoyed’ and ‘recommended’) and reflects positive emotion.&lt;/p&gt;
+
+&lt;p&gt;But consider this similar quote.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;I could not put this book down and will not hesitate to recommend it to family and friends.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This sentence is a bit different.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;positive&lt;/th&gt;
+      &lt;th&gt;negative&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;recommend&lt;/td&gt;
+      &lt;td&gt;not (twice)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;down&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;hesitate&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Although overall it is a positive review, it contains some negative words. Simple sentiment calculations based on the occurrence of positive or negative words will misclassify this review.&lt;/p&gt;
+
+&lt;p&gt;There are three negative words but only one positive word, giving a net negative result overall.&lt;/p&gt;
+
+&lt;p&gt;Now consider a sarcastic review.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;I am glad the author chose to use overly long and flowery descriptions for each and every change of scene as I needed some scrap paper to line my pet parrot’s cage. Furthermore, the huge number of typographic errors was a refreshing change from reading professionally edited books. I recommend this to anyone who also enjoys long and unnecessary dental procedures.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This is full of positive words — ‘glad’, ‘huge’, ‘refreshing’, ‘recommend’ and ‘enjoys’ — and contains &lt;em&gt;no&lt;/em&gt; negative words. Taken as a whole the review uses humourous sarcasm to give the book a negative review.&lt;/p&gt;
+
+&lt;p&gt;This presents a huge challenge to standard sentiment calculation techniques.&lt;/p&gt;
+
+&lt;p&gt;Over the past ten or so years, improvements in machine learning algorithms have brought us so much. Computer algorithms can now  &lt;a href=&quot;https://www.forbes.com/sites/bernardmarr/2018/08/24/will-machine-learning-ai-make-human-translators-an-endangered-species/#45b3d2df3902&quot;&gt;translate at a rate comparable to human translators&lt;/a&gt;, &lt;a href=&quot;https://deepfakenow.com/hollywood-deepfake-movies/&quot;&gt;do a better job than Hollywood&lt;/a&gt; of reanimating those actors who are no longer with us, &lt;a href=&quot;https://www.microsoft.com/en-us/research/blog/novel-object-captioning-surpasses-human-performance-on-benchmarks/&quot;&gt;caption images&lt;/a&gt; at a better success rate than people and generate &lt;a href=&quot;https://www.thisworddoesnotexist.com&quot;&gt;fascinating definitions&lt;/a&gt; for non-words.&lt;/p&gt;
+
+&lt;p&gt;Understanding whether comments are sarcastic can be useful to know: some have suggested that sarcastic users may have more influence than other users. The question I want to explore further is:&lt;/p&gt;
+
+&lt;h5 id=&quot;have-recent-advances-in-machine-learning-allowed-algorithms-to-correctly-and-reliably-detect-sarcasm&quot;&gt;Have recent advances in machine learning allowed algorithms to correctly and reliably detect sarcasm?&lt;/h5&gt;
+
+&lt;p&gt;Before getting too far into this topic, what &lt;em&gt;is&lt;/em&gt; sarcasm? You can look it up on &lt;a href=&quot;https://duckduckgo.com&quot;&gt;Duck Duck Go&lt;/a&gt; if you like, but here is my take on it.&lt;/p&gt;
+
+&lt;p&gt;Sarcasm is a form of irony used to convey the opposite of what is stated in some sense. It can be used as &lt;a href=&quot;https://www.independent.co.uk/news/science/sarcasm-how-lowest-form-wit-actually-makes-people-brighter-and-more-creative-10416281.html&quot;&gt;the lowest form of wit&lt;/a&gt; or to be humorous; it is often used as an insult or to mock but also to display irritation. In conversation, sarcasm is usually accompanied by gestures, tonal stress or eye-rolls.&lt;/p&gt;
+
+&lt;p&gt;When analysing text in situations where we do not get the benefits of tonal or visual cues, we need to rely &lt;em&gt;only&lt;/em&gt; on what was written. Sometimes a writer will include additional clues like emoticons and emoji to signal their true emotion, which can help.&lt;/p&gt;
+
+&lt;p&gt;One of the problems with detecting sarcasm is having some baseline of truth against which to compare. We need some data on what comments are sarcastic and which are not. As sarcasm is not universally understood — and we know Sheldon would not be an effective arbiter of sarcasm — any pre-existing data set with sarcastic–non-sarcastic labels is bound to contain errors.&lt;/p&gt;
+
+&lt;p&gt;A relatively recent data set by Oprea and Magdy &lt;a href=&quot;https://arxiv.org/pdf/2009.13080.pdf&quot;&gt;(&lt;em&gt;Reactive Supervision&lt;/em&gt;)&lt;/a&gt; contains self-described sarcastic comments along with an explanation of why the author thought the comment was sarcastic. I will be a useful resource for training and evaluating sarcasm detectors, but even this will present some problems:  the data set does not include the context of the original comment, and &lt;a href=&quot;http://documents.mx/documents/yeah-right-a-linguistic-analysis-of-self-reported-sarcastic-messages-and-their-contexts.html&quot;&gt;people themselves are unreliable at reporting sarcasm in their own comments&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;There is a lesson here for aspiring writers. Avoid sarcasm if you want to be understood well: your audience may not comprehend the signal you are hiding in the noise of sarcasm.&lt;/p&gt;
+
+&lt;p&gt;Current strategies to detect sarcasm in comments generally look to explore knowledge outside of the comment itself (I use the word ‘comments’ here to include reviews, tweets and other short texts). For example,&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;www.crowdanalyzer.com&quot;&gt;separate the analysis of emotion from the sentiment analysis&lt;/a&gt;;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://deepai.org/publication/the-role-of-conversation-context-for-sarcasm-detection-in-online-interactions&quot;&gt;understand the context in which the comment was made&lt;/a&gt;;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://towardsdatascience.com/sarcasm-detection-with-nlp-cbff1723f69a&quot;&gt;examine whether an author has been sarcastic in the past&lt;/a&gt;;&lt;/li&gt;
+  &lt;li&gt;determine whether the comment seems to contradict itself and contains many positive and negative words;&lt;/li&gt;
+  &lt;li&gt;determine whether the comment seems to contradict generally known facts (sometimes split into &lt;a href=&quot;https://www.toptal.com/deep-learning/4-sentiment-analysis-accuracy-traps&quot;&gt;numeric&lt;/a&gt; and non-numeric comments); and&lt;/li&gt;
+  &lt;li&gt;compare the structure of the comment with known structures of sarcasm (for example, &lt;a href=&quot;[here](https://www.crowdanalyzer.com/blog/sentiment-analysis)&quot;&gt;going from positive to negative&lt;/a&gt;, &lt;a href=&quot;https://towardsdatascience.com/sarcasm-detection-with-nlp-cbff1723f69a&quot;&gt;a polite but contrasting tone&lt;/a&gt; and &lt;a href=&quot;https://www.themarysue.com/sarcasm-detecting-algorithm-online/&quot;&gt;excessive use of capitals and exclamation marks&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And of course, you could try multiple approaches. (See &lt;a href=&quot;https://www.researchgate.net/publication/325843750_A_COMPREHENSIVE_STUDY_ON_SARCASM_DETECTION_TECHNIQUES_IN_SENTIMENT_ANALYSIS/link/5bb0db42a6fdccd3cb7f80e0/download&quot;&gt;here&lt;/a&gt; for some more detail on sarcasm structure.)&lt;/p&gt;
+
+&lt;p&gt;A complementary approach is to use &lt;a href=&quot;https://github.com/SenticNet/CASCADE--ContextuAl-SarCAsm-DEtector&quot;&gt;deep learning architectures&lt;/a&gt; to train sarcasm detectors. These are showing some promise, especially if combined with some of the approaches above. But the results in any of the papers are not blowing me away in the same way that other deep learning models do.&lt;/p&gt;
+
+&lt;p&gt;It would seem from the literature, code, blog posts and other informative sources that we have made some inroads into sarcasm detection, but there is still a way to go.&lt;/p&gt;
+
+&lt;p&gt;For some fun, I thought I would try an extremely non-scientific approach to evaluating two online sarcasm detectors. In both of these online detectors, you can visit the website and enter your text. (Obviously these detectors cannot account for context.) To test them out, I used two sarcastic book reviews from Amazon as well as the example from above.&lt;/p&gt;
+
+&lt;p&gt;Here are the results:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Comment&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;[The sarcasm detector](http://www.thesarcasmdetector.com) (the score is from -100 to 100; the higher the more sarcastic)&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;[Parallel Dots API](https://www.paralleldots.com/sarcasm-detection)  (0% to 100%; the higher the more sarcastic)&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;I am glad the author chose to use overly long and flowery descriptions for each and every change of scene as I needed some scrap paper to line my pet parrot’s cage. Furthermore, the huge number of typographic errors was a refreshing change from reading professionally edited books. I recommend this to anyone who also enjoys long and unnecessary dental procedures.&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-46&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;44%&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;This book works if you need something to read on a plane trip from Florida to Ohio.  It held my interest to an extent.  However, I got the feeling he knocked this one off in about the time it takes to type it.  It takes about 3 minutes to figure out his daughter is coming home for Christmas.  Wait for the paperback.&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;-71&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;58%&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;One need only to have listened to the oblique babbling of most corporate managers to realize that this is their Bible. Admittedly it will help your career.  You will learn how to speak out of both sides of your mouth, appear agreeable at all times, and engage in all manner of corporate BS.  Everyone will like you, except for those ne&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;The commercial version from Parallel Dots worked a little better than &lt;em&gt;The Sarcasm Detector&lt;/em&gt;, but both are obviously struggling with the meaning of these reviews.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Sarcasm detection has improved but can get better.&lt;/p&gt;
+
+&lt;p&gt;There is potential in combining various approaches, using deep learning architectures, accounting for the conversation and user context and codifying patterns of known sarcasms to improve the current state of detection.&lt;/p&gt;
+
+&lt;p&gt;But keep in mind the point is moot. Sarcasm is only an effective means of communication when the auther and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.&lt;/p&gt;
+
+&lt;p&gt;If you are analysing sentiment, make sure you use the emotion of any included emoji or emoticons to help your analysis. Include a rating field if you want better understanding of your customers’ true sentiment.&lt;/p&gt;
+
+&lt;p&gt;If you are a writer, &lt;em&gt;be clear&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;more-information&quot;&gt;More information&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python&quot;&gt;Click here for more information on sentiment analysis and to access my &lt;strong&gt;free course&lt;/strong&gt;.&lt;/a&gt;
+er-do goods-who abhor pretension and deceit.  And, most importantly, you will get that raise!  After all, get real, being honest, principled and lucid won&lt;/p&gt;
+
+&lt;p&gt;The commercial version from Parallel Dots worked a little better than &lt;em&gt;The Sarcasm Detector&lt;/em&gt;, but both are obviously struggling with the meaning of these reviews.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion-1&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Sarcasm detection has improved but can get better.&lt;/p&gt;
+
+&lt;p&gt;There is potential in combining various approaches, using deep learning architectures, accounting for the conversation and user context and codifying patterns of known sarcasms to improve the current state of detection.&lt;/p&gt;
+
+&lt;p&gt;But keep in mind the point is moot. Sarcasm is only an effective means of communication when the auther and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.&lt;/p&gt;
+
+&lt;p&gt;If you are analysing sentiment, make sure you use the emotion of any included emoji or emoticons to help your analysis. Include a rating field if you want better understanding of your customers’ true sentiment.&lt;/p&gt;
+
+&lt;p&gt;If you are a writer, &lt;em&gt;be clear&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;more-information-1&quot;&gt;More information&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python&quot;&gt;Click here for more information on sentiment analysis and to access my &lt;strong&gt;free course&lt;/strong&gt;.&lt;/a&gt;
+t pay the rent and may even get you a pink slip. If you want to &quot;get ahead&quot; buy this book! If you are like me and amuse yourself by reading the kind of obfuscate and dissimulating language found in those emails from managers that arrive in your workplace computer, get this book for a good laugh! Dale Carnegie is the St. Paul of American Yuppies. |                                                          -36 |                                                          27% |&lt;/p&gt;
+
+&lt;p&gt;The commercial version from Parallel Dots worked a little better than &lt;em&gt;The Sarcasm Detector&lt;/em&gt;, but both are obviously struggling with the meaning of these reviews.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion-2&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Sarcasm detection has improved but can get better.&lt;/p&gt;
+
+&lt;p&gt;There is potential in combining various approaches, using deep learning architectures, accounting for the conversation and user context and codifying patterns of known sarcasms to improve the current state of detection.&lt;/p&gt;
+
+&lt;p&gt;But keep in mind the point is moot. Sarcasm is only an effective means of communication when the auther and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.&lt;/p&gt;
+
+&lt;p&gt;If you are analysing sentiment, make sure you use the emotion of any included emoji or emoticons to help your analysis. Include a rating field if you want better understanding of your customers’ true sentiment.&lt;/p&gt;
+
+&lt;p&gt;If you are a writer, &lt;em&gt;be clear&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;more-information-2&quot;&gt;More information&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python&quot;&gt;Click here for more information on sentiment analysis and to access my &lt;strong&gt;free course&lt;/strong&gt;.&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="NLP" /><category term="sentiment" /><summary type="html">Automatic sentiment analysis of texts has historically struggled to handle sarcasm well. Have advances in machine learning techniques made inroads to the detection of sarcasm?</summary></entry></feed>

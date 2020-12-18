@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Like sentiment analysis can detect sarcasm! | Data Science in the Wild</title>
+<meta name="generator" content="Jekyll v3.9.0">
+<meta property="og:title" content="Like sentiment analysis can detect sarcasm!">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Automatic sentiment analysis of texts has historically struggled to handle sarcasm well. Have advances in machine learning techniques made inroads to the detection of sarcasm?">
+<meta property="og:description" content="Automatic sentiment analysis of texts has historically struggled to handle sarcasm well. Have advances in machine learning techniques made inroads to the detection of sarcasm?">
+<link rel="canonical" href="/nlp/sentiment/2020/11/07/like-Sentiment-analysis-can-detect-sarcasm.html">
+<meta property="og:url" content="/nlp/sentiment/2020/11/07/like-Sentiment-analysis-can-detect-sarcasm.html">
+<meta property="og:site_name" content="Data Science in the Wild">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-11-07T22:00:00+00:00">
+<script type="application/ld+json">
+{"description":"Automatic sentiment analysis of texts has historically struggled to handle sarcasm well. Have advances in machine learning techniques made inroads to the detection of sarcasm?","headline":"Like sentiment analysis can detect sarcasm!","dateModified":"2020-11-07T22:00:00+00:00","datePublished":"2020-11-07T22:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"/nlp/sentiment/2020/11/07/like-Sentiment-analysis-can-detect-sarcasm.html"},"url":"/nlp/sentiment/2020/11/07/like-Sentiment-analysis-can-detect-sarcasm.html","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css">
+<link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Data Science in the Wild">
+</head>
+<body>
+<header class="site-header" role="banner">
+
+  <div class="wrapper">
+<a class="site-title" rel="author" href="/">Data Science in the Wild</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger">
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewbox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav>
+</div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Like sentiment analysis can detect sarcasm!</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-11-07T22:00:00+00:00" itemprop="datePublished">Nov 7, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><em>Automatic sentiment analysis of texts has historically struggled to handle sarcasm well. Have advances in machine learning techniques made inroads to the detection of sarcasm?</em></p>
+
+<p>You may have heard about <a href="https://en.wikipedia.org/wiki/Sentiment_analysis">sentiment analysis</a>. It is a technique that analyses text and tries to establish whether the emotional state of the person who wrote it was <strong>positive</strong> or <strong>negative</strong>. It is a powerful way of understanding whether tweets regarding your product are trending positively or negatively. In turn, you can use this as an early warning system for problems as they arise. And there are myriad other uses.</p>
+
+<p>But English can be a strange language. One of the toughest jobs that automated sentiment detection has is when sarcasm is involved.</p>
+
+<p>This is not surprising. Actual people can have difficulty in detecting sarcasm. Think of Sheldon from <em>Big Bang Theory</em> or Sean Murphy from <em>The Good Doctor</em>. (And some have argued that Alanis Morrisette cannot recognise irony, <a href="https://www.theatlantic.com/notes/2016/05/alanis-morissette-recognizes-its-not-ironic/481875/">but maybe those people are too pedantic</a>.)</p>
+
+<p><img src="https://znculturecast.files.wordpress.com/2013/03/dc056b4f8c9493f3c64e6e0a85382b31.jpeg" style="zoom:67%;"><br>
+<em>Dr Sheldon Cooper is really good at detecting sarcasm</em></p>
+
+<p>Consider the following quote.</p>
+
+<blockquote>
+  <p>I really enjoyed this book and will recommend it to my friends and family.</p>
+</blockquote>
+
+<p>This quote contains <em>positive</em> words (‘enjoyed’ and ‘recommended’) and reflects positive emotion.</p>
+
+<p>But consider this similar quote.</p>
+
+<blockquote>
+  <p>I could not put this book down and will not hesitate to recommend it to family and friends.</p>
+</blockquote>
+
+<p>This sentence is a bit different.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>positive</th>
+      <th>negative</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>recommend</td>
+      <td>not (twice)</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>down</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>hesitate</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Although overall it is a positive review, it contains some negative words. Simple sentiment calculations based on the occurrence of positive or negative words will misclassify this review.</p>
+
+<p>There are three negative words but only one positive word, giving a net negative result overall.</p>
+
+<p>Now consider a sarcastic review.</p>
+
+<blockquote>
+  <p>I am glad the author chose to use overly long and flowery descriptions for each and every change of scene as I needed some scrap paper to line my pet parrot’s cage. Furthermore, the huge number of typographic errors was a refreshing change from reading professionally edited books. I recommend this to anyone who also enjoys long and unnecessary dental procedures.</p>
+</blockquote>
+
+<p>This is full of positive words — ‘glad’, ‘huge’, ‘refreshing’, ‘recommend’ and ‘enjoys’ — and contains <em>no</em> negative words. Taken as a whole the review uses humourous sarcasm to give the book a negative review.</p>
+
+<p>This presents a huge challenge to standard sentiment calculation techniques.</p>
+
+<p>Over the past ten or so years, improvements in machine learning algorithms have brought us so much. Computer algorithms can now  <a href="https://www.forbes.com/sites/bernardmarr/2018/08/24/will-machine-learning-ai-make-human-translators-an-endangered-species/#45b3d2df3902">translate at a rate comparable to human translators</a>, <a href="https://deepfakenow.com/hollywood-deepfake-movies/">do a better job than Hollywood</a> of reanimating those actors who are no longer with us, <a href="https://www.microsoft.com/en-us/research/blog/novel-object-captioning-surpasses-human-performance-on-benchmarks/">caption images</a> at a better success rate than people and generate <a href="https://www.thisworddoesnotexist.com">fascinating definitions</a> for non-words.</p>
+
+<p>Understanding whether comments are sarcastic can be useful to know: some have suggested that sarcastic users may have more influence than other users. The question I want to explore further is:</p>
+
+<h5 id="have-recent-advances-in-machine-learning-allowed-algorithms-to-correctly-and-reliably-detect-sarcasm">Have recent advances in machine learning allowed algorithms to correctly and reliably detect sarcasm?</h5>
+
+<p>Before getting too far into this topic, what <em>is</em> sarcasm? You can look it up on <a href="https://duckduckgo.com">Duck Duck Go</a> if you like, but here is my take on it.</p>
+
+<p>Sarcasm is a form of irony used to convey the opposite of what is stated in some sense. It can be used as <a href="https://www.independent.co.uk/news/science/sarcasm-how-lowest-form-wit-actually-makes-people-brighter-and-more-creative-10416281.html">the lowest form of wit</a> or to be humorous; it is often used as an insult or to mock but also to display irritation. In conversation, sarcasm is usually accompanied by gestures, tonal stress or eye-rolls.</p>
+
+<p>When analysing text in situations where we do not get the benefits of tonal or visual cues, we need to rely <em>only</em> on what was written. Sometimes a writer will include additional clues like emoticons and emoji to signal their true emotion, which can help.</p>
+
+<p>One of the problems with detecting sarcasm is having some baseline of truth against which to compare. We need some data on what comments are sarcastic and which are not. As sarcasm is not universally understood — and we know Sheldon would not be an effective arbiter of sarcasm — any pre-existing data set with sarcastic–non-sarcastic labels is bound to contain errors.</p>
+
+<p>A relatively recent data set by Oprea and Magdy <a href="https://arxiv.org/pdf/2009.13080.pdf">(<em>Reactive Supervision</em>)</a> contains self-described sarcastic comments along with an explanation of why the author thought the comment was sarcastic. I will be a useful resource for training and evaluating sarcasm detectors, but even this will present some problems:  the data set does not include the context of the original comment, and <a href="http://documents.mx/documents/yeah-right-a-linguistic-analysis-of-self-reported-sarcastic-messages-and-their-contexts.html">people themselves are unreliable at reporting sarcasm in their own comments</a>.</p>
+
+<p>There is a lesson here for aspiring writers. Avoid sarcasm if you want to be understood well: your audience may not comprehend the signal you are hiding in the noise of sarcasm.</p>
+
+<p>Current strategies to detect sarcasm in comments generally look to explore knowledge outside of the comment itself (I use the word ‘comments’ here to include reviews, tweets and other short texts). For example,</p>
+
+<ul>
+  <li>
+<a href="www.crowdanalyzer.com">separate the analysis of emotion from the sentiment analysis</a>;</li>
+  <li>
+<a href="https://deepai.org/publication/the-role-of-conversation-context-for-sarcasm-detection-in-online-interactions">understand the context in which the comment was made</a>;</li>
+  <li>
+<a href="https://towardsdatascience.com/sarcasm-detection-with-nlp-cbff1723f69a">examine whether an author has been sarcastic in the past</a>;</li>
+  <li>determine whether the comment seems to contradict itself and contains many positive and negative words;</li>
+  <li>determine whether the comment seems to contradict generally known facts (sometimes split into <a href="https://www.toptal.com/deep-learning/4-sentiment-analysis-accuracy-traps">numeric</a> and non-numeric comments); and</li>
+  <li>compare the structure of the comment with known structures of sarcasm (for example, <a href="%5Bhere%5D(https://www.crowdanalyzer.com/blog/sentiment-analysis)">going from positive to negative</a>, <a href="https://towardsdatascience.com/sarcasm-detection-with-nlp-cbff1723f69a">a polite but contrasting tone</a> and <a href="https://www.themarysue.com/sarcasm-detecting-algorithm-online/">excessive use of capitals and exclamation marks</a>).</li>
+</ul>
+
+<p>And of course, you could try multiple approaches. (See <a href="https://www.researchgate.net/publication/325843750_A_COMPREHENSIVE_STUDY_ON_SARCASM_DETECTION_TECHNIQUES_IN_SENTIMENT_ANALYSIS/link/5bb0db42a6fdccd3cb7f80e0/download">here</a> for some more detail on sarcasm structure.)</p>
+
+<p>A complementary approach is to use <a href="https://github.com/SenticNet/CASCADE--ContextuAl-SarCAsm-DEtector">deep learning architectures</a> to train sarcasm detectors. These are showing some promise, especially if combined with some of the approaches above. But the results in any of the papers are not blowing me away in the same way that other deep learning models do.</p>
+
+<p>It would seem from the literature, code, blog posts and other informative sources that we have made some inroads into sarcasm detection, but there is still a way to go.</p>
+
+<p>For some fun, I thought I would try an extremely non-scientific approach to evaluating two online sarcasm detectors. In both of these online detectors, you can visit the website and enter your text. (Obviously these detectors cannot account for context.) To test them out, I used two sarcastic book reviews from Amazon as well as the example from above.</p>
+
+<p>Here are the results:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Comment</th>
+      <th style="text-align: right">
+<a href="http://www.thesarcasmdetector.com">The sarcasm detector</a> (the score is from -100 to 100; the higher the more sarcastic)</th>
+      <th style="text-align: right">
+<a href="https://www.paralleldots.com/sarcasm-detection">Parallel Dots API</a>  (0% to 100%; the higher the more sarcastic)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>I am glad the author chose to use overly long and flowery descriptions for each and every change of scene as I needed some scrap paper to line my pet parrot’s cage. Furthermore, the huge number of typographic errors was a refreshing change from reading professionally edited books. I recommend this to anyone who also enjoys long and unnecessary dental procedures.</td>
+      <td style="text-align: right">-46</td>
+      <td style="text-align: right">44%</td>
+    </tr>
+    <tr>
+      <td>This book works if you need something to read on a plane trip from Florida to Ohio.  It held my interest to an extent.  However, I got the feeling he knocked this one off in about the time it takes to type it.  It takes about 3 minutes to figure out his daughter is coming home for Christmas.  Wait for the paperback.</td>
+      <td style="text-align: right">-71</td>
+      <td style="text-align: right">58%</td>
+    </tr>
+    <tr>
+      <td>One need only to have listened to the oblique babbling of most corporate managers to realize that this is their Bible. Admittedly it will help your career.  You will learn how to speak out of both sides of your mouth, appear agreeable at all times, and engage in all manner of corporate BS.  Everyone will like you, except for those ne</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The commercial version from Parallel Dots worked a little better than <em>The Sarcasm Detector</em>, but both are obviously struggling with the meaning of these reviews.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Sarcasm detection has improved but can get better.</p>
+
+<p>There is potential in combining various approaches, using deep learning architectures, accounting for the conversation and user context and codifying patterns of known sarcasms to improve the current state of detection.</p>
+
+<p>But keep in mind the point is moot. Sarcasm is only an effective means of communication when the auther and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.</p>
+
+<p>If you are analysing sentiment, make sure you use the emotion of any included emoji or emoticons to help your analysis. Include a rating field if you want better understanding of your customers’ true sentiment.</p>
+
+<p>If you are a writer, <em>be clear</em>.</p>
+
+<h3 id="more-information">More information</h3>
+
+<p><a href="https://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python">Click here for more information on sentiment analysis and to access my <strong>free course</strong>.</a>
+er-do goods-who abhor pretension and deceit.  And, most importantly, you will get that raise!  After all, get real, being honest, principled and lucid won</p>
+
+<p>The commercial version from Parallel Dots worked a little better than <em>The Sarcasm Detector</em>, but both are obviously struggling with the meaning of these reviews.</p>
+
+<h2 id="conclusion-1">Conclusion</h2>
+
+<p>Sarcasm detection has improved but can get better.</p>
+
+<p>There is potential in combining various approaches, using deep learning architectures, accounting for the conversation and user context and codifying patterns of known sarcasms to improve the current state of detection.</p>
+
+<p>But keep in mind the point is moot. Sarcasm is only an effective means of communication when the auther and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.</p>
+
+<p>If you are analysing sentiment, make sure you use the emotion of any included emoji or emoticons to help your analysis. Include a rating field if you want better understanding of your customers’ true sentiment.</p>
+
+<p>If you are a writer, <em>be clear</em>.</p>
+
+<h3 id="more-information-1">More information</h3>
+
+<p><a href="https://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python">Click here for more information on sentiment analysis and to access my <strong>free course</strong>.</a>
+t pay the rent and may even get you a pink slip. If you want to "get ahead" buy this book! If you are like me and amuse yourself by reading the kind of obfuscate and dissimulating language found in those emails from managers that arrive in your workplace computer, get this book for a good laugh! Dale Carnegie is the St. Paul of American Yuppies. |                                                          -36 |                                                          27% |</p>
+
+<p>The commercial version from Parallel Dots worked a little better than <em>The Sarcasm Detector</em>, but both are obviously struggling with the meaning of these reviews.</p>
+
+<h2 id="conclusion-2">Conclusion</h2>
+
+<p>Sarcasm detection has improved but can get better.</p>
+
+<p>There is potential in combining various approaches, using deep learning architectures, accounting for the conversation and user context and codifying patterns of known sarcasms to improve the current state of detection.</p>
+
+<p>But keep in mind the point is moot. Sarcasm is only an effective means of communication when the auther and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.</p>
+
+<p>If you are analysing sentiment, make sure you use the emotion of any included emoji or emoticons to help your analysis. Include a rating field if you want better understanding of your customers’ true sentiment.</p>
+
+<p>If you are a writer, <em>be clear</em>.</p>
+
+<h3 id="more-information-2">More information</h3>
+
+<p><a href="https://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python">Click here for more information on sentiment analysis and to access my <strong>free course</strong>.</a></p>
+
+  </div>
+<a class="u-url" href="/nlp/sentiment/2020/11/07/like-Sentiment-analysis-can-detect-sarcasm.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Data Science in the Wild</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Data Science in the Wild</li>
+<li><a class="u-email" href="mailto:jamespearce@3crownsconsulting.com.au">jamespearce@3crownsconsulting.com.au</a></li>
+</ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+<ul class="social-media-list"></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Better techniques for getting valuable decisions from data.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
