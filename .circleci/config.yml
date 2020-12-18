@@ -12,6 +12,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-bundle-\{\{ checksum "Gemfile.lock" \}\}
+      - run: bundle update --bundler
       - run: bundle install --path vendor/bundle
       - save_cache:
           paths:
