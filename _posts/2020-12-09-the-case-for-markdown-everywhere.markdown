@@ -239,6 +239,6 @@ _I wrote the first draft of this article in Markdown. You can find a copy of the
 
 ### More information
 
-[Click here to access my **free course** on sentiment analysis.](ttps://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python)
+[Click here to access my **free course** on sentiment analysis.](https://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python)
 
 &copy; 2020 James Pearce, 3 Crowns Consulting.
