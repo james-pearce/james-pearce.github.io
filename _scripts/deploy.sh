@@ -2,7 +2,7 @@
 # _scripts/deploy.sh
 
 DEPLOY_DIR=$(mktemp -d)
-BUILD_DIR=4(readlink -f "./_site")
+BUILD_DIR=$(readlink -f "./_site")
 
 # Clone target repo to a temp directory to ensure no name collision
 git clone $CIRCLE_REPOSITORY_URL $DEPLOY_DIR
