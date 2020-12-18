@@ -3,6 +3,7 @@
 
 DEPLOY_DIR=$(mktemp -d)
 BUILD_DIR=$(readlink -f "./_site")
+echo $BUILD_DIR
 
 # Clone target repo to a temp directory to ensure no name collision
 git clone $CIRCLE_REPOSITORY_URL $DEPLOY_DIR
@@ -17,11 +18,11 @@ git config --global user.name CI
 git config --global user.email pearce.je@icloud.com
 
 # copy compiled site from artifacts
-rsync -a --delete --exclude=.git BUILD_DIR/ .
+rsync -a --delete --exclude=.git $BUILD_DIR/ .
 
 # commit changes
 git add -A
-git commit -m "Deployed in CI: $CIRCLE_BUILDD_URL"
+git commit -m "Deployed in CI: $CIRCLE_BUILD_URL"
 git push origin master
 
 # ping search engines with the new sitemap
