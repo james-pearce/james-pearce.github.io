@@ -9,7 +9,23 @@ jobs:
     executor: ruby/default
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-bundle-\{\{ checksum "Gemfile.lock" \}\}
+      - run: bundle install --path vendor/bundle
+      - save_cache:
+          paths:
+            - vendor/bundle
+          key: v1-bundle-\{\{ checksum "Gemfile.lock" \}\}
       - run:
-          name: Which bundler?
-          command: bundle -v
-      - ruby/bundle-install
+          name: Install Prerequisites
+          command: "sudo apt-get update; sudo apt-get install -y rsync"
+      - run:
+          name: Build Site
+          command: JEKYLL_ENV=production bundle exec jekyll build
+      - store_artifacts:
+          path: _site
+          destination: /
+      - run:
+          name: Deploy
+          command: scripts/deploy.sh
