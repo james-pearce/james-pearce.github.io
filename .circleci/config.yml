@@ -1,6 +1,0 @@
-general:
-  branches:
-    only:
-      - circleci-project-setup
-    ignore:
-      - master
