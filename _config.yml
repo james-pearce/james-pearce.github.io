@@ -61,6 +61,6 @@ kramdown:
 #   - vendor/ruby/
 
 include:
-  - .circleci/
-  - .circleci/config.yml
+  - ".circleci/"
+  - ".circleci/config.yml"
   - CNAME
