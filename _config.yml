@@ -62,4 +62,5 @@ kramdown:
 
 include:
   - .circleci/
+  - .circleci/config.yml
   - CNAME
