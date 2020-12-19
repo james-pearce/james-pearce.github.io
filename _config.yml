@@ -21,7 +21,7 @@
 title: Data Science in the Wild
 email: jamespearce@3crownsconsulting.com.au
 description: >- # this means to ignore newlines until "baseurl:"
-  Better techniques for getting valuable decisions from data.
+  Better techniques for getting more from your data.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://blog.3crownsconsulting.com.au" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username:
@@ -61,4 +61,5 @@ kramdown:
 #   - vendor/ruby/
 
 include:
-  - Gemfile
+  - .circleci/
+  - CNAME
