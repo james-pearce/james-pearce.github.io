@@ -104,6 +104,8 @@ If you are analysing sentiment, make sure you use the emotion of any included em
 
 If you are a writer, _be clear_.
 
+> **NOTE: For some reason this post is rendering strangely. I am aware of it and apologise. I hope I can fix it soon.
+
 ---
 
 ### More information
