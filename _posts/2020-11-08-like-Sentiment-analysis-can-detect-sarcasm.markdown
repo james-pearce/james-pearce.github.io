@@ -104,6 +104,8 @@ If you are analysing sentiment, make sure you use the emotion of any included em
 
 If you are a writer, _be clear_.
 
+---
+
 ### More information
 
 [Click here for more information on sentiment analysis and to access my **free course**.](https://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python)
