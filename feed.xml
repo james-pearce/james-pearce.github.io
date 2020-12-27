@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://www.3crownsconsulting.com.au/feed.xml" rel="self" type="application/atom+xml" /><link href="http://www.3crownsconsulting.com.au/" rel="alternate" type="text/html" /><updated>2020-12-20T08:32:25+00:00</updated><id>http://www.3crownsconsulting.com.au/feed.xml</id><title type="html">Data Science in the Wild</title><subtitle>Better techniques for getting more from your data.</subtitle><entry><title type="html">The case for Markdown everywhere</title><link href="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html" rel="alternate" type="text/html" title="The case for Markdown everywhere" /><published>2020-12-08T22:00:00+00:00</published><updated>2020-12-08T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html">&lt;h1 id=&quot;why-i-love-markdown-and-want-to-see-its-use-become-more-widespread&quot;&gt;&lt;em&gt;Why I love Markdown and want to see its use become more widespread&lt;/em&gt;&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://www.3crownsconsulting.com.au/feed.xml" rel="self" type="application/atom+xml" /><link href="http://www.3crownsconsulting.com.au/" rel="alternate" type="text/html" /><updated>2020-12-27T11:41:12+00:00</updated><id>http://www.3crownsconsulting.com.au/feed.xml</id><title type="html">Data Science in the Wild</title><subtitle>Better techniques for getting more from your data.</subtitle><entry><title type="html">The case for Markdown everywhere</title><link href="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html" rel="alternate" type="text/html" title="The case for Markdown everywhere" /><published>2020-12-08T22:00:00+00:00</published><updated>2020-12-08T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html">&lt;h1 id=&quot;why-i-love-markdown-and-want-to-see-its-use-become-more-widespread&quot;&gt;&lt;em&gt;Why I love Markdown and want to see its use become more widespread&lt;/em&gt;&lt;/h1&gt;
 
 &lt;h2 id=&quot;intro&quot;&gt;Intro&lt;/h2&gt;
 
@@ -448,6 +448,8 @@ So it is easy to include a maths equation like $ y = X\beta + \epsilon $.&lt;/p&
 
 &lt;p&gt;If you are a writer, &lt;em&gt;be clear&lt;/em&gt;.&lt;/p&gt;
 
+&lt;hr /&gt;
+
 &lt;h3 id=&quot;more-information&quot;&gt;More information&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python&quot;&gt;Click here for more information on sentiment analysis and to access my &lt;strong&gt;free course&lt;/strong&gt;.&lt;/a&gt;
@@ -467,6 +469,8 @@ er-do goods-who abhor pretension and deceit.  And, most importantly, you will ge
 
 &lt;p&gt;If you are a writer, &lt;em&gt;be clear&lt;/em&gt;.&lt;/p&gt;
 
+&lt;hr /&gt;
+
 &lt;h3 id=&quot;more-information-1&quot;&gt;More information&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://3-crowns-academy.teachable.com/p/build-your-first-document-classifier-with-machine-learning-in-python&quot;&gt;Click here for more information on sentiment analysis and to access my &lt;strong&gt;free course&lt;/strong&gt;.&lt;/a&gt;
@@ -485,6 +489,8 @@ t pay the rent and may even get you a pink slip. If you want to &quot;get ahead&
 &lt;p&gt;If you are analysing sentiment, make sure you use the emotion of any included emoji or emoticons to help your analysis. Include a rating field if you want better understanding of your customers’ true sentiment.&lt;/p&gt;
 
 &lt;p&gt;If you are a writer, &lt;em&gt;be clear&lt;/em&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
 
 &lt;h3 id=&quot;more-information-2&quot;&gt;More information&lt;/h3&gt;
 
