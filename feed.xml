@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://www.3crownsconsulting.com.au/feed.xml" rel="self" type="application/atom+xml" /><link href="http://www.3crownsconsulting.com.au/" rel="alternate" type="text/html" /><updated>2020-12-27T12:39:44+00:00</updated><id>http://www.3crownsconsulting.com.au/feed.xml</id><title type="html">Data Science in the Wild</title><subtitle>Better techniques for getting more from your data.</subtitle><entry><title type="html">The case for Markdown everywhere</title><link href="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html" rel="alternate" type="text/html" title="The case for Markdown everywhere" /><published>2020-12-08T22:00:00+00:00</published><updated>2020-12-08T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html">&lt;h1 id=&quot;why-i-love-markdown-and-want-to-see-its-use-become-more-widespread&quot;&gt;&lt;em&gt;Why I love Markdown and want to see its use become more widespread&lt;/em&gt;&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://www.3crownsconsulting.com.au/feed.xml" rel="self" type="application/atom+xml" /><link href="http://www.3crownsconsulting.com.au/" rel="alternate" type="text/html" /><updated>2020-12-30T21:57:02+00:00</updated><id>http://www.3crownsconsulting.com.au/feed.xml</id><title type="html">Data Science in the Wild</title><subtitle>Better techniques for getting more from your data.</subtitle><entry><title type="html">The case for Markdown everywhere</title><link href="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html" rel="alternate" type="text/html" title="The case for Markdown everywhere" /><published>2020-12-08T22:00:00+00:00</published><updated>2020-12-08T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html">&lt;h1 id=&quot;why-i-love-markdown-and-want-to-see-its-use-become-more-widespread&quot;&gt;&lt;em&gt;Why I love Markdown and want to see its use become more widespread&lt;/em&gt;&lt;/h1&gt;
 
 &lt;h2 id=&quot;intro&quot;&gt;Intro&lt;/h2&gt;
 
@@ -442,7 +442,7 @@ So it is easy to include a maths equation like $ y = X\beta + \epsilon $.&lt;/p&
 
 &lt;p&gt;There is potential in combining various approaches, using deep learning architectures, accounting for the conversation and user context and codifying patterns of known sarcasms to improve the current state of detection.&lt;/p&gt;
 
-&lt;p&gt;But keep in mind the point is moot. Sarcasm is only an effective means of communication when the auther and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.&lt;/p&gt;
+&lt;p&gt;But keep in mind the point is moot. Sarcasm is only an effective means of communication when the author and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.&lt;/p&gt;
 
 &lt;p&gt;If you are analysing sentiment, make sure you use the emotion of any included emoji or emoticons to help your analysis. Include a rating field if you want better understanding of your customers’ true sentiment.&lt;/p&gt;
 
@@ -467,7 +467,7 @@ er-do goods-who abhor pretension and deceit.  And, most importantly, you will ge
 
 &lt;p&gt;There is potential in combining various approaches, using deep learning architectures, accounting for the conversation and user context and codifying patterns of known sarcasms to improve the current state of detection.&lt;/p&gt;
 
-&lt;p&gt;But keep in mind the point is moot. Sarcasm is only an effective means of communication when the auther and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.&lt;/p&gt;
+&lt;p&gt;But keep in mind the point is moot. Sarcasm is only an effective means of communication when the author and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.&lt;/p&gt;
 
 &lt;p&gt;If you are analysing sentiment, make sure you use the emotion of any included emoji or emoticons to help your analysis. Include a rating field if you want better understanding of your customers’ true sentiment.&lt;/p&gt;
 
@@ -492,7 +492,7 @@ t pay the rent and may even get you a pink slip. If you want to &quot;get ahead&
 
 &lt;p&gt;There is potential in combining various approaches, using deep learning architectures, accounting for the conversation and user context and codifying patterns of known sarcasms to improve the current state of detection.&lt;/p&gt;
 
-&lt;p&gt;But keep in mind the point is moot. Sarcasm is only an effective means of communication when the auther and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.&lt;/p&gt;
+&lt;p&gt;But keep in mind the point is moot. Sarcasm is only an effective means of communication when the author and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.&lt;/p&gt;
 
 &lt;p&gt;If you are analysing sentiment, make sure you use the emotion of any included emoji or emoticons to help your analysis. Include a rating field if you want better understanding of your customers’ true sentiment.&lt;/p&gt;
 
