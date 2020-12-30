@@ -98,7 +98,7 @@ Sarcasm detection has improved but can get better.
 
 There is potential in combining various approaches, using deep learning architectures, accounting for the conversation and user context and codifying patterns of known sarcasms to improve the current state of detection.
 
-But keep in mind the point is moot. Sarcasm is only an effective means of communication when the auther and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.
+But keep in mind the point is moot. Sarcasm is only an effective means of communication when the author and reader share context. Without this, humans — not just algorithms — will fail to get the intended message.
 
 If you are analysing sentiment, make sure you use the emotion of any included emoji or emoticons to help your analysis. Include a rating field if you want better understanding of your customers’ true sentiment.
 
