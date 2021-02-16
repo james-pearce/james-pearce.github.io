@@ -7,8 +7,9 @@ categories: machine-learning sklearn
 
 # New features in scikit-learn 0.24
 
-Welcome to a short series of posts where I look at some of the new features introduced in [scikit-learn](https://scikit-learn.org/stable/) version 0.24, a newish release of the popuar Python machine learning library.
+Welcome to a short series of posts where I look at some of the new features introduced in [scikit-learn](https://scikit-learn.org/stable/) version 0.24, a newish release of the popular Python machine learning library.
 
+> You can find a copy of this Jupyter notebook [here](https://drive.google.com/file/d/1T_7sTm0GvMLJFMTQbxtRJM4HTZWqD0-z/view?usp=sharing).
 
 ## Feature #1: Successive Halving
 
@@ -16,11 +17,11 @@ The first new feature we will examine is called 'successive halving'. It is sugg
 
 Note that I prefer random searches in general because
 
-  1. the data scietist has more control over the execution time of the search; and
+  1. the data scientist has more control over the execution time of the search; and
   2. [random searches can lean to a more accurate result](https://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf) compared with a grid search because they go "in between"
      the grid 'lines'.
 
-The idea with successive halving (which you can read more about [here](https://blog.ml.cmu.edu/2018/12/12/massively-parallel-hyperparameter-optimization/)  is that early in the search we use fewer 'resources' but search more candidates. 'Resources' usually referns to the number of samples used to git a learner, but _can_ be any aparmeter. Another sensible choice for multiple-tree-based learners (like [random forests](https://en.wikipedia.org/wiki/Random_forest) or [GBMs](https://en.wikipedia.org/wiki/Gradient_boosting)) is the number of trees fitted.
+The idea with successive halving (which you can read more about [here](https://blog.ml.cmu.edu/2018/12/12/massively-parallel-hyperparameter-optimization/)  is that early in the search we use fewer 'resources' but search more candidates. 'Resources' usually refers to the number of samples used to git a learner, but _can_ be any parameter. Another sensible choice for multiple-tree-based learners (like [random forests](https://en.wikipedia.org/wiki/Random_forest) or [GBMs](https://en.wikipedia.org/wiki/Gradient_boosting)) is the number of trees fitted.
 
 # Successive halving example
 
@@ -35,7 +36,7 @@ _**Example of successive halving with `factor = 2`**_
 
 ## Import the libraries we will need
 
-As usual, I like to import a few standard libraries so I can maniputate data frames and access the underlying OS.
+As usual, I like to import a few standard libraries so I can manipulate data frames and access the underlying OS.
 
 
 ```python
@@ -909,7 +910,7 @@ res_df.groupby('iter')['mean_test_score'].max()
 
 
 
-Accoring to the cross-validation AUC score on the _training_ set, successive halving produced a better model than the naive GBM after iteration 4.
+According to the cross-validation AUC score on the _training_ set, successive halving produced a better model than the naive GBM after iteration 4.
 
 Check the performance of the final model against the test set. This will show us whether the performance has improved compared with the initial baseline model we fit against the same test set.
 
