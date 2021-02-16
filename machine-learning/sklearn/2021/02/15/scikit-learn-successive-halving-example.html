@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>New features in scikit-learn part 1 — successive halving | Data Science in the Wild</title>
+<meta name="generator" content="Jekyll v3.9.0">
+<meta property="og:title" content="New features in scikit-learn part 1 — successive halving">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="New features in scikit-learn 0.24">
+<meta property="og:description" content="New features in scikit-learn 0.24">
+<link rel="canonical" href="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html">
+<meta property="og:url" content="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html">
+<meta property="og:site_name" content="Data Science in the Wild">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2021-02-15T22:00:00+00:00">
+<script type="application/ld+json">
+{"description":"New features in scikit-learn 0.24","headline":"New features in scikit-learn part 1 — successive halving","dateModified":"2021-02-15T22:00:00+00:00","datePublished":"2021-02-15T22:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html"},"url":"http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css">
+<link type="application/atom+xml" rel="alternate" href="http://www.3crownsconsulting.com.au/feed.xml" title="Data Science in the Wild">
+</head>
+<body>
+<header class="site-header" role="banner">
+
+  <div class="wrapper">
+<a class="site-title" rel="author" href="/">Data Science in the Wild</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger">
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewbox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav>
+</div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">New features in scikit-learn part 1 — successive halving</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-02-15T22:00:00+00:00" itemprop="datePublished">Feb 15, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="new-features-in-scikit-learn-024">New features in scikit-learn 0.24</h1>
+
+<p>Welcome to a short series of posts where I look at some of the new features introduced in <a href="https://scikit-learn.org/stable/">scikit-learn</a> version 0.24, a newish release of the popuar Python machine learning library.</p>
+
+<h2 id="feature-1-successive-halving">Feature #1: Successive Halving</h2>
+
+<p>The first new feature we will examine is called ‘successive halving’. It is suggested as an alternative to <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html">grid searches</a> or <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html">random searches</a> for <a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">hyperparameter tuning</a>.</p>
+
+<p>Note that I prefer random searches in general because</p>
+
+<ol>
+  <li>the data scietist has more control over the execution time of the search; and</li>
+  <li>
+<a href="https://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf">random searches can lean to a more accurate result</a> compared with a grid search because they go “in between”
+the grid ‘lines’.</li>
+</ol>
+
+<p>The idea with successive halving (which you can read more about <a href="https://blog.ml.cmu.edu/2018/12/12/massively-parallel-hyperparameter-optimization/">here</a>  is that early in the search we use fewer ‘resources’ but search more candidates. ‘Resources’ usually referns to the number of samples used to git a learner, but <em>can</em> be any aparmeter. Another sensible choice for multiple-tree-based learners (like <a href="https://en.wikipedia.org/wiki/Random_forest">random forests</a> or <a href="https://en.wikipedia.org/wiki/Gradient_boosting">GBMs</a>) is the number of trees fitted.</p>
+
+<h1 id="successive-halving-example">Successive halving example</h1>
+
+<p>So now we know what the successive halving does, let’s try it out on some real-world data. Unfortunately the examples in scikit-learn’s examples use only generated data, which I find too clinical to give an indication of what a classification algorithm might be like to use in anger.</p>
+
+<p>The parameter <code class="language-plaintext highlighter-rouge">factor</code> sets the ‘halving’ or fraction rate. It determines the proportion of candidates that are selected for each subsequent iteration. For example, <code class="language-plaintext highlighter-rouge">factor=3</code> means that only one third of the candidates are selected.</p>
+
+<p>If we do <em>not</em> specify a specific parameter, the default is to change the size of the sample at each halving iteration. In this way you can select a small sample across the grid space of hyperparameters that gets successively larger as you get closer to the optimum (at least theoretically).</p>
+
+<p><img src="attachment:Paper.February_2021.1%202.png" alt="Paper.February_2021.1%202.png">
+<em><strong>Example of successive halving with <code class="language-plaintext highlighter-rouge">factor = 2</code></strong></em></p>
+
+<h2 id="import-the-libraries-we-will-need">Import the libraries we will need</h2>
+
+<p>As usual, I like to import a few standard libraries so I can maniputate data frames and access the underlying OS.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+</code></pre></div></div>
+
+<p>I also like to change the configuration of <code class="language-plaintext highlighter-rouge">pandas</code> to show all the columns of a data frame.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pd</span><span class="p">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">'display.max_columns'</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="lending-club">Lending club</h2>
+
+<p>We will use a sample of the <a href="https://www.lendingclub.com"><strong>Lending Club</strong></a> data. This is a view of the data I have manipulated a little bit for education purposes, and you can download it <a href="https://drive.google.com/file/d/1Rahuvn8LwKPNnch5lrhKvEyQHkZGZpuu/view?usp=sharing">here</a>. This data set contains details of loans, and we are interested in classifying loans that have gone ‘bad’ (that is, not repaid) against others.</p>
+
+<p>The data is stored in CSV format, so we read it in using <code class="language-plaintext highlighter-rouge">pandas</code>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data_path</span> <span class="o">=</span> <span class="s">'~/repos/sklearn00/data'</span>
+<span class="n">lending_filename</span> <span class="o">=</span> <span class="s">'loan_stats_course.csv'</span>
+
+<span class="n">lending_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">lending_filename</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>Examine the data.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lending_df</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>
+</th>
+      <th>id</th>
+      <th>member_id</th>
+      <th>loan_amnt</th>
+      <th>funded_amnt</th>
+      <th>funded_amnt_inv</th>
+      <th>term</th>
+      <th>int_rate</th>
+      <th>installment</th>
+      <th>grade</th>
+      <th>sub_grade</th>
+      <th>emp_title</th>
+      <th>emp_length</th>
+      <th>home_ownership</th>
+      <th>annual_inc</th>
+      <th>is_inc_v</th>
+      <th>issue_d</th>
+      <th>loan_status</th>
+      <th>pymnt_plan</th>
+      <th>purpose</th>
+      <th>zip_code</th>
+      <th>addr_state</th>
+      <th>dti</th>
+      <th>delinq_2yrs</th>
+      <th>inq_last_6mths</th>
+      <th>mths_since_last_delinq</th>
+      <th>mths_since_last_record</th>
+      <th>open_acc</th>
+      <th>pub_rec</th>
+      <th>revol_bal</th>
+      <th>revol_util</th>
+      <th>total_acc</th>
+      <th>initial_list_status</th>
+      <th>out_prncp</th>
+      <th>out_prncp_inv</th>
+      <th>total_pymnt</th>
+      <th>total_pymnt_inv</th>
+      <th>total_rec_prncp</th>
+      <th>total_rec_int</th>
+      <th>total_rec_late_fee</th>
+      <th>recoveries</th>
+      <th>collection_recovery_fee</th>
+      <th>last_pymnt_amnt</th>
+      <th>next_pymnt_d</th>
+      <th>collections_12_mths_ex_med</th>
+      <th>mths_since_last_major_derog</th>
+      <th>policy_code</th>
+      <th>bad_loan</th>
+      <th>credit_length_in_years</th>
+      <th>earned</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1077430</td>
+      <td>1314167</td>
+      <td>2500</td>
+      <td>2500</td>
+      <td>2500.0</td>
+      <td>60 months</td>
+      <td>15.27</td>
+      <td>59.83</td>
+      <td>C</td>
+      <td>C4</td>
+      <td>Ryder</td>
+      <td>0.0</td>
+      <td>RENT</td>
+      <td>30000.0</td>
+      <td>Source Verified</td>
+      <td>Dec-2011</td>
+      <td>Charged Off</td>
+      <td>n</td>
+      <td>car</td>
+      <td>309xx</td>
+      <td>GA</td>
+      <td>1.00</td>
+      <td>0.0</td>
+      <td>5.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>3.0</td>
+      <td>0.0</td>
+      <td>1687</td>
+      <td>9.4</td>
+      <td>4.0</td>
+      <td>f</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1008.710000</td>
+      <td>1008.71</td>
+      <td>456.46</td>
+      <td>435.17</td>
+      <td>0.0</td>
+      <td>117.08</td>
+      <td>1.11</td>
+      <td>119.66</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>1</td>
+      <td>12.0</td>
+      <td>-1491.290000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1077175</td>
+      <td>1313524</td>
+      <td>2400</td>
+      <td>2400</td>
+      <td>2400.0</td>
+      <td>36 months</td>
+      <td>15.96</td>
+      <td>84.33</td>
+      <td>C</td>
+      <td>C5</td>
+      <td>NaN</td>
+      <td>10.0</td>
+      <td>RENT</td>
+      <td>12252.0</td>
+      <td>Not Verified</td>
+      <td>Dec-2011</td>
+      <td>Fully Paid</td>
+      <td>n</td>
+      <td>small_business</td>
+      <td>606xx</td>
+      <td>IL</td>
+      <td>8.72</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>2956</td>
+      <td>98.5</td>
+      <td>10.0</td>
+      <td>f</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3003.653644</td>
+      <td>3003.65</td>
+      <td>2400.00</td>
+      <td>603.65</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>649.91</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>0</td>
+      <td>10.0</td>
+      <td>603.653644</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1071795</td>
+      <td>1306957</td>
+      <td>5600</td>
+      <td>5600</td>
+      <td>5600.0</td>
+      <td>60 months</td>
+      <td>21.28</td>
+      <td>152.39</td>
+      <td>F</td>
+      <td>F2</td>
+      <td>NaN</td>
+      <td>4.0</td>
+      <td>OWN</td>
+      <td>40000.0</td>
+      <td>Source Verified</td>
+      <td>Dec-2011</td>
+      <td>Charged Off</td>
+      <td>n</td>
+      <td>small_business</td>
+      <td>958xx</td>
+      <td>CA</td>
+      <td>5.55</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>11.0</td>
+      <td>0.0</td>
+      <td>5210</td>
+      <td>32.6</td>
+      <td>13.0</td>
+      <td>f</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>646.020000</td>
+      <td>646.02</td>
+      <td>162.02</td>
+      <td>294.94</td>
+      <td>0.0</td>
+      <td>189.06</td>
+      <td>2.09</td>
+      <td>152.39</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>1</td>
+      <td>7.0</td>
+      <td>-4953.980000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1071570</td>
+      <td>1306721</td>
+      <td>5375</td>
+      <td>5375</td>
+      <td>5350.0</td>
+      <td>60 months</td>
+      <td>12.69</td>
+      <td>121.45</td>
+      <td>B</td>
+      <td>B5</td>
+      <td>Starbucks</td>
+      <td>0.0</td>
+      <td>RENT</td>
+      <td>15000.0</td>
+      <td>Verified</td>
+      <td>Dec-2011</td>
+      <td>Charged Off</td>
+      <td>n</td>
+      <td>other</td>
+      <td>774xx</td>
+      <td>TX</td>
+      <td>18.08</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>9279</td>
+      <td>36.5</td>
+      <td>3.0</td>
+      <td>f</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1476.190000</td>
+      <td>1469.34</td>
+      <td>673.48</td>
+      <td>533.42</td>
+      <td>0.0</td>
+      <td>269.29</td>
+      <td>2.52</td>
+      <td>121.45</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>1</td>
+      <td>7.0</td>
+      <td>-3898.810000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1070078</td>
+      <td>1305201</td>
+      <td>6500</td>
+      <td>6500</td>
+      <td>6500.0</td>
+      <td>60 months</td>
+      <td>14.65</td>
+      <td>153.45</td>
+      <td>C</td>
+      <td>C3</td>
+      <td>Southwest Rural metro</td>
+      <td>5.0</td>
+      <td>OWN</td>
+      <td>72000.0</td>
+      <td>Not Verified</td>
+      <td>Dec-2011</td>
+      <td>Fully Paid</td>
+      <td>n</td>
+      <td>debt_consolidation</td>
+      <td>853xx</td>
+      <td>AZ</td>
+      <td>16.12</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>14.0</td>
+      <td>0.0</td>
+      <td>4032</td>
+      <td>20.6</td>
+      <td>23.0</td>
+      <td>f</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>7677.520000</td>
+      <td>7677.52</td>
+      <td>6500.00</td>
+      <td>1177.52</td>
+      <td>0.0</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>1655.54</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>0</td>
+      <td>13.0</td>
+      <td>1177.520000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>Get a list of all the columns. Later we will remove the columns we are not using and identify which colums are categorical and which are numeric.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">all_columns</span> <span class="o">=</span> <span class="n">lending_df</span><span class="p">.</span><span class="n">columns</span><span class="p">.</span><span class="n">tolist</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Remove some of the variables that indicate a bad loan and would represent <a href="https://en.wikipedia.org/wiki/Leakage_(machine_learning)"><strong>target leakage</strong></a>. These columns are in the data set because Lending Club only provides a current snapshot of their loans. To avoid the leakage problem we ideally want time-stamped transactions within a relational database.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="s">'issue_d'</span><span class="p">,</span> <span class="s">'emp_title'</span><span class="p">,</span> <span class="s">'zip_code'</span><span class="p">,</span> <span class="s">'earned'</span><span class="p">,</span> <span class="s">'total_rec_prncp'</span><span class="p">,</span> <span class="s">'recoveries'</span><span class="p">,</span> <span class="s">'total_rec_int'</span><span class="p">,</span>
+             <span class="s">'total_rec_late_fee'</span><span class="p">,</span> <span class="s">'collection_recovery_fee'</span><span class="p">,</span> <span class="s">'next_pyment_d'</span><span class="p">,</span> <span class="s">'loan_status'</span><span class="p">,</span> <span class="s">'pymnt_plan'</span><span class="p">,</span>
+             <span class="s">'id'</span><span class="p">,</span> <span class="s">'member_id'</span><span class="p">,</span> <span class="s">'out_prncp'</span><span class="p">,</span> <span class="s">'out_prncp_inv'</span><span class="p">,</span> <span class="s">'total_pymnt'</span><span class="p">,</span> <span class="s">'total_pymnt_inv'</span><span class="p">,</span> <span class="s">'last_pymnt_amnt'</span><span class="p">,</span>
+             <span class="s">'next_pymnt_d'</span><span class="p">,</span> <span class="s">'collections_12_mths_ex_med'</span><span class="p">,</span> <span class="s">'mths_since_last_major_derog'</span><span class="p">,</span> <span class="s">'policy_code'</span><span class="p">,</span>
+             <span class="s">'credit_length_in_years'</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Identify the columns that should be converted from string to categorical.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cat_features</span> <span class="o">=</span> <span class="p">[</span><span class="s">'term'</span><span class="p">,</span> <span class="s">'grade'</span><span class="p">,</span> <span class="s">'sub_grade'</span><span class="p">,</span> <span class="s">'home_ownership'</span><span class="p">,</span>
+                      <span class="s">'is_inc_v'</span><span class="p">,</span> <span class="s">'purpose'</span><span class="p">,</span> <span class="s">'addr_state'</span><span class="p">,</span>
+                      <span class="s">'initial_list_status'</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>The target column is <code class="language-plaintext highlighter-rouge">bad_loan</code>. It takes values of <code class="language-plaintext highlighter-rouge">1</code> for a bad loan and <code class="language-plaintext highlighter-rouge">0</code> for one which has not gone bad (or not gone bad <em>yet</em> in some cases).</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">target</span> <span class="o">=</span> <span class="s">'bad_loan'</span>
+
+<span class="n">to_remove</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Get a list of all the predictors and numeric features.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">predictors</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">all_columns</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">to_remove</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">num_features</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">predictors</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cat_features</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Check the shape of the data so we have an idea of how many rows we have to train and test our classifier with.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lending_df</span><span class="p">.</span><span class="n">shape</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(36842, 49)
+</code></pre></div></div>
+
+<p>We have 36,842 rows to play with.</p>
+
+<h3 id="split-into-training-and-test-sets">Split into training and test sets</h3>
+
+<p>We will train against a separate data set from the one we will test our trained classifier against, using scikit-learn’s <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html"><code class="language-plaintext highlighter-rouge">train_test_split</code></a> to partition the data set randomly.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+</code></pre></div></div>
+
+<p>I am going to fix the test size at 5,000; this seems like a good enough number while retaining plenty of sample to train the classifier.</p>
+
+<p><strong>Note:</strong> I like to specify parameters as keyword arguments. This way we can load configuration files if we want when we run from a script without having to edit the code. This is much better than having to changing values within our script for a simple change.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># It would be quite easy to stick these in a file and read them in
+</span><span class="n">split_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">random_state</span> <span class="o">=</span> <span class="mi">1737</span><span class="p">,</span>
+    <span class="n">test_size</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">lending_df</span><span class="p">[</span><span class="n">predictors</span><span class="p">],</span> <span class="n">lending_df</span><span class="p">[</span><span class="n">target</span><span class="p">],</span> <span class="o">**</span><span class="n">split_config</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Check that we get the right number of rows back in the test set. I like to check things are as they should be (at least in my mind) so I write tests.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">assert</span> <span class="n">X_test</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">split_config</span><span class="p">[</span><span class="s">'test_size'</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Examine the distribution of <code class="language-plaintext highlighter-rouge">bad_loans</code> in <code class="language-plaintext highlighter-rouge">y_train</code>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">y_train</span><span class="p">.</span><span class="n">value_counts</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0    26693
+1     5149
+Name: bad_loan, dtype: int64
+</code></pre></div></div>
+
+<h2 id="build-a-simple-classifier">Build a simple classifier</h2>
+
+<p>For this example I will use scikit-learn’s <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html"><code class="language-plaintext highlighter-rouge">GradientBoostingClassifier</code></a>. I shall also use the excellent <a href="https://scikit-learn.org/stable/modules/compose.html#combining-estimators"><code class="language-plaintext highlighter-rouge">Pipeline</code></a> capability of scikit-learn to build our classifier. This allows us to combine our preprocessing and classifier into the one composite classifier object. There are many good reasons to do this that I will not go into further here.</p>
+
+<p>One I will mention is that we cab perform a search over preprocessing parameters if we like, though I am not doing that here.</p>
+
+<p>To encode the categorical variables, we will use <a href="http://contrib.scikit-learn.org/category_encoders/catboost.html"><code class="language-plaintext highlighter-rouge">CatBoostEncoder</code></a> from <a href="http://contrib.scikit-learn.org/category_encoders/"><code class="language-plaintext highlighter-rouge">category_encoders</code></a>, which you can install using <code class="language-plaintext highlighter-rouge">pip</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip <span class="nb">install </span>category_encoders
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">GradientBoostingClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn.compose</span> <span class="kn">import</span> <span class="n">ColumnTransformer</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+
+<span class="kn">import</span> <span class="nn">category_encoders</span> <span class="k">as</span> <span class="n">ce</span>
+<span class="kn">from</span> <span class="nn">sklearn.impute</span> <span class="kn">import</span> <span class="n">SimpleImputer</span>
+</code></pre></div></div>
+
+<h3 id="set-up-the-pipelines">Set up the pipelines</h3>
+
+<p>The pipeline we will set up has two steps.</p>
+
+<ol>
+  <li>
+    <p>The preprocessor, which will use <code class="language-plaintext highlighter-rouge">CatBoostEncoder</code> for categorical features and <a href="https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html"><code class="language-plaintext highlighter-rouge">SimpleImputer</code></a> for numeric
+features.</p>
+  </li>
+  <li>
+    <p>A <code class="language-plaintext highlighter-rouge">GradientBoostingClassifier</code> as the model.</p>
+  </li>
+</ol>
+
+<p>We combine the two preprocessors using <a href="https://scikit-learn.org/stable/modules/generated/sklearn.compose.ColumnTransformer.html"><code class="language-plaintext highlighter-rouge">ColumnTransformer</code></a>, which uses takes a tuple of the format <code class="language-plaintext highlighter-rouge">(name, transformer, columns)</code>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">preprocessor</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span>
+    <span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">(</span><span class="s">'categorical'</span><span class="p">,</span> <span class="n">ce</span><span class="p">.</span><span class="n">CatBoostEncoder</span><span class="p">(),</span> <span class="n">cat_features</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">'numeric'</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(),</span> <span class="n">num_features</span><span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">check_array</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">assert</span> <span class="n">check_array</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">predictors</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">feature_names</span> <span class="o">=</span> <span class="n">cat_features</span> <span class="o">+</span> <span class="n">num_features</span>
+</code></pre></div></div>
+
+<p>Check whether <code class="language-plaintext highlighter-rouge">check_array</code> contains <code class="language-plaintext highlighter-rouge">NaN</code>s.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">assert</span> <span class="ow">not</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">check_array</span><span class="p">).</span><span class="nb">any</span><span class="p">())</span>
+</code></pre></div></div>
+
+<p>Create and test our classifier. Remember, this will become a step in our pipeline.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gbm</span> <span class="o">=</span> <span class="n">GradientBoostingClassifier</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Here I test if the <code class="language-plaintext highlighter-rouge">fit</code> method runs using a <code class="language-plaintext highlighter-rouge">try … except</code> construct.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span><span class="p">:</span>
+    <span class="n">gbm</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">check_array</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="s">'Bad gbm fit'</span>
+</code></pre></div></div>
+
+<p>Now let us create a pipeline that includes our GBM. We name each step of the pipeline so we can refer to parameters in each of the steps.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gbm_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+    <span class="p">(</span><span class="s">'preprocessor'</span><span class="p">,</span> <span class="n">preprocessor</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">'gbm'</span><span class="p">,</span> <span class="n">gbm</span><span class="p">)</span>
+<span class="p">])</span>
+</code></pre></div></div>
+
+<p>We can refer to parameters in a pipeline by using the format <strong><code class="language-plaintext highlighter-rouge">name</code></strong><code class="language-plaintext highlighter-rouge">__</code><strong><code class="language-plaintext highlighter-rouge">parameter</code></strong>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">'gbm__n_estimators'</span> <span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="s">'gbm__max_depth'</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s">'gbm__min_samples_leaf'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+    <span class="s">'gbm__learning_rate'</span> <span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span>
+    <span class="s">'gbm__subsample'</span> <span class="p">:</span> <span class="mf">1.0</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>To set a parameter for a one-off fit, we use the <code class="language-plaintext highlighter-rouge">set_params</code> method. Here we are setting the parameters to get a pretty-good model using default parameters. We will compare the results from this with those from successive halving later.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gbm_pipeline</span><span class="p">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">param_grid</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pipeline(steps=[('preprocessor',
+                 ColumnTransformer(transformers=[('categorical',
+                                                  CatBoostEncoder(),
+                                                  ['term', 'grade', 'sub_grade',
+                                                   'home_ownership', 'is_inc_v',
+                                                   'purpose', 'addr_state',
+                                                   'initial_list_status']),
+                                                 ('numeric', SimpleImputer(),
+                                                  ['loan_amnt', 'funded_amnt',
+                                                   'funded_amnt_inv',
+                                                   'int_rate', 'installment',
+                                                   'emp_length', 'annual_inc',
+                                                   'dti', 'delinq_2yrs',
+                                                   'inq_last_6mths',
+                                                   'mths_since_last_delinq',
+                                                   'mths_since_last_record',
+                                                   'open_acc', 'pub_rec',
+                                                   'revol_bal', 'revol_util',
+                                                   'total_acc'])])),
+                ('gbm',
+                 GradientBoostingClassifier(learning_rate=0.15, max_depth=1,
+                                            min_samples_leaf=30,
+                                            n_estimators=20))])
+</code></pre></div></div>
+
+<p>Test that it runs.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span><span class="p">:</span>
+    <span class="n">gbm_pipeline</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="s">'Bad pipeline fit'</span>
+</code></pre></div></div>
+
+<h3 id="check-the-performance-of-the-basic-model">Check the performance of the basic model</h3>
+
+<p>To give a baseline of the performance of our basic model that we fit in the previous step, we calculate the <a href="https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc">area under the receiver operating characteristic curve (ROC)</a>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">y_pred</span> <span class="o">=</span> <span class="n">gbm_pipeline</span><span class="p">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">baseline_auc</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">f'The baseline AUC performance is </span><span class="si">{</span><span class="n">baseline_auc</span><span class="p">:.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="s">.'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The baseline AUC performance is 0.696.
+</code></pre></div></div>
+
+<p>This model is one we expect to be okay, if not spectacular.</p>
+
+<h2 id="test-successive-halving">Test successive halving</h2>
+
+<p>Successive halving is still an experimental feature, so we need to turn it on explicitly.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># explicitly require this experimental feature
+</span><span class="kn">from</span> <span class="nn">sklearn.experimental</span> <span class="kn">import</span> <span class="n">enable_halving_search_cv</span>  
+
+<span class="c1"># now you can import normally from model_selection
+</span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">HalvingGridSearchCV</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">HalvingRandomSearchCV</span>
+
+<span class="kn">import</span> <span class="nn">scipy</span>
+</code></pre></div></div>
+
+<p>Check how many rows we have in our training set.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">X_train</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>31842
+</code></pre></div></div>
+
+<p>We have 31,842 rows in our training data set, so we will set the starting number of minimum resources to 256. This will double at each iteration until we hit the limit.</p>
+
+<p>Set the parameter grid for the search.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">'gbm__n_estimators'</span> <span class="p">:</span> <span class="n">scipy</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2001</span><span class="p">),</span>
+    <span class="s">'gbm__n_iter_no_change'</span><span class="p">:</span> <span class="p">[</span><span class="mi">50</span><span class="p">],</span>
+    <span class="s">'gbm__max_depth'</span> <span class="p">:</span> <span class="n">scipy</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span>
+    <span class="s">'gbm__min_samples_leaf'</span><span class="p">:</span> <span class="n">scipy</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">51</span><span class="p">),</span>
+    <span class="s">'gbm__learning_rate'</span> <span class="p">:</span> <span class="n">scipy</span><span class="p">.</span><span class="n">stats</span><span class="p">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+    <span class="s">'gbm__subsample'</span> <span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Set some configurable parameters for the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.HalvingRandomSearchCV.html"><code class="language-plaintext highlighter-rouge">HalvingRandomSearchCV</code></a> we will run. We will use the number of samples as the resource and use AUC (area under the curve) to evaluate the best model.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config
+</span><span class="n">hrs_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="s">'n_samples'</span><span class="p">,</span> <span class="n">min_resources</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s">'roc_auc'</span><span class="p">,</span>
+                  <span class="n">random_state</span><span class="o">=</span><span class="mi">1707</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>I like to note how much time potentially long-running cells take to execute. Do this easily in Jupyter with the <a href="https://ipython.readthedocs.io/en/stable/interactive/magics.html"><code class="language-plaintext highlighter-rouge">%%time</code> cell magic</a>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">time</span>
+<span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">seed</span><span class="p">(</span><span class="n">hrs_params</span><span class="p">[</span><span class="s">'random_state'</span><span class="p">])</span>
+<span class="n">sh</span> <span class="o">=</span> <span class="n">HalvingRandomSearchCV</span><span class="p">(</span><span class="n">gbm_pipeline</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="o">**</span><span class="n">hrs_params</span><span class="p">)</span>
+<span class="n">sh</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_iterations: 7
+n_required_iterations: 7
+n_possible_iterations: 7
+min_resources_: 256
+max_resources_: 31842
+aggressive_elimination: False
+factor: 2
+----------
+iter: 0
+n_candidates: 124
+n_resources: 256
+Fitting 5 folds for each of 124 candidates, totalling 620 fits
+----------
+iter: 1
+n_candidates: 62
+n_resources: 512
+Fitting 5 folds for each of 62 candidates, totalling 310 fits
+----------
+iter: 2
+n_candidates: 31
+n_resources: 1024
+Fitting 5 folds for each of 31 candidates, totalling 155 fits
+----------
+iter: 3
+n_candidates: 16
+n_resources: 2048
+Fitting 5 folds for each of 16 candidates, totalling 80 fits
+----------
+iter: 4
+n_candidates: 8
+n_resources: 4096
+Fitting 5 folds for each of 8 candidates, totalling 40 fits
+----------
+iter: 5
+n_candidates: 4
+n_resources: 8192
+Fitting 5 folds for each of 4 candidates, totalling 20 fits
+----------
+iter: 6
+n_candidates: 2
+n_resources: 16384
+Fitting 5 folds for each of 2 candidates, totalling 10 fits
+CPU times: user 7min 40s, sys: 1.19 s, total: 7min 41s
+Wall time: 7min 42s
+
+
+
+
+
+HalvingRandomSearchCV(estimator=Pipeline(steps=[('preprocessor',
+                                                 ColumnTransformer(transformers=[('categorical',
+                                                                                  CatBoostEncoder(),
+                                                                                  ['term',
+                                                                                   'grade',
+                                                                                   'sub_grade',
+                                                                                   'home_ownership',
+                                                                                   'is_inc_v',
+                                                                                   'purpose',
+                                                                                   'addr_state',
+                                                                                   'initial_list_status']),
+                                                                                 ('numeric',
+                                                                                  SimpleImputer(),
+                                                                                  ['loan_amnt',
+                                                                                   'funded_amnt',
+                                                                                   'funded_amnt_inv',
+                                                                                   'int_rate',
+                                                                                   'installment',
+                                                                                   'emp_length',
+                                                                                   'annual_...
+                                           'gbm__max_depth': &lt;scipy.stats._distn_infrastructure.rv_frozen object at 0x7fa3353f3910&gt;,
+                                           'gbm__min_samples_leaf': &lt;scipy.stats._distn_infrastructure.rv_frozen object at 0x7fa3354bad00&gt;,
+                                           'gbm__n_estimators': &lt;scipy.stats._distn_infrastructure.rv_frozen object at 0x7fa3354ba910&gt;,
+                                           'gbm__n_iter_no_change': [50],
+                                           'gbm__subsample': [1.0]},
+                      random_state=1707,
+                      refit=&lt;function _refit_callable at 0x7fa3335f0280&gt;,
+                      scoring='roc_auc', verbose=1)
+</code></pre></div></div>
+
+<p>This took 6 iterations and around 8 minutes on my machine.</p>
+
+<p>Note that at each step the number of candidates halved until we got to two in the final step.</p>
+
+<p>Once successive halving has settled on a final candidate, it fits it using the whole sample.</p>
+
+<p>Examine the parameters of the best and final estimator.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sh</span><span class="p">.</span><span class="n">best_estimator_</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pipeline(steps=[('preprocessor',
+                 ColumnTransformer(transformers=[('categorical',
+                                                  CatBoostEncoder(),
+                                                  ['term', 'grade', 'sub_grade',
+                                                   'home_ownership', 'is_inc_v',
+                                                   'purpose', 'addr_state',
+                                                   'initial_list_status']),
+                                                 ('numeric', SimpleImputer(),
+                                                  ['loan_amnt', 'funded_amnt',
+                                                   'funded_amnt_inv',
+                                                   'int_rate', 'installment',
+                                                   'emp_length', 'annual_inc',
+                                                   'dti', 'delinq_2yrs',
+                                                   'inq_last_6mths',
+                                                   'mths_since_last_delinq',
+                                                   'mths_since_last_record',
+                                                   'open_acc', 'pub_rec',
+                                                   'revol_bal', 'revol_util',
+                                                   'total_acc'])])),
+                ('gbm',
+                 GradientBoostingClassifier(learning_rate=0.37976865555958783,
+                                            max_depth=1, min_samples_leaf=16,
+                                            n_estimators=1500,
+                                            n_iter_no_change=50))])
+</code></pre></div></div>
+
+<p>We can check how the scoring progressed in each iteration. Recall our baseline AUC score is 0.696.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sh</span><span class="p">.</span><span class="n">cv_results_</span><span class="p">)</span>
+<span class="n">res_df</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'iter'</span><span class="p">)[</span><span class="s">'mean_test_score'</span><span class="p">].</span><span class="nb">max</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>iter
+0    0.618091
+1    0.652617
+2    0.648898
+3    0.695115
+4    0.717969
+5    0.725628
+6    0.727079
+Name: mean_test_score, dtype: float64
+</code></pre></div></div>
+
+<p>Accoring to the cross-validation AUC score on the <em>training</em> set, successive halving produced a better model than the naive GBM after iteration 4.</p>
+
+<p>Check the performance of the final model against the test set. This will show us whether the performance has improved compared with the initial baseline model we fit against the same test set.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">preds_test</span> <span class="o">=</span> <span class="n">sh</span><span class="p">.</span><span class="n">best_estimator_</span><span class="p">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">baseline_auc</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+<span class="n">rsh_auc</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">preds_test</span><span class="p">)</span>
+<span class="n">rsh_auc</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.7233991664802961
+</code></pre></div></div>
+
+<p>We got an AUC score of 0.723 which is better than 0.696 — a definite improvement.</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>The successive halving approach is a reasonable algorithm that does the same sort of thing that I advise learning data scientists to do. That is, perform searches using smaller samples at first to cut down processing time. Once we have a good idea of the best parameters, fit against a large sample to improve the precision of the estimators.</p>
+
+<p>Of course, one could argue the position that the parameters of the successive halving are additional hyperparameters that need to be optimised on. But that would send you down the <strong>rabbit hole</strong> and distract you from this fact: for most purposes, a good model is not significantly better than the best model. Your time is usually better spent ensuring the entire problem solving process, end-to-end pipeline and experimental design are also ‘good enough’.</p>
+
+  </div>
+<a class="u-url" href="/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Data Science in the Wild</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Data Science in the Wild</li>
+<li><a class="u-email" href="mailto:jamespearce@3crownsconsulting.com.au">jamespearce@3crownsconsulting.com.au</a></li>
+</ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+<ul class="social-media-list"></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Better techniques for getting more from your data.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,4 +1,829 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://www.3crownsconsulting.com.au/feed.xml" rel="self" type="application/atom+xml" /><link href="http://www.3crownsconsulting.com.au/" rel="alternate" type="text/html" /><updated>2020-12-30T21:57:02+00:00</updated><id>http://www.3crownsconsulting.com.au/feed.xml</id><title type="html">Data Science in the Wild</title><subtitle>Better techniques for getting more from your data.</subtitle><entry><title type="html">The case for Markdown everywhere</title><link href="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html" rel="alternate" type="text/html" title="The case for Markdown everywhere" /><published>2020-12-08T22:00:00+00:00</published><updated>2020-12-08T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html">&lt;h1 id=&quot;why-i-love-markdown-and-want-to-see-its-use-become-more-widespread&quot;&gt;&lt;em&gt;Why I love Markdown and want to see its use become more widespread&lt;/em&gt;&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://www.3crownsconsulting.com.au/feed.xml" rel="self" type="application/atom+xml" /><link href="http://www.3crownsconsulting.com.au/" rel="alternate" type="text/html" /><updated>2021-02-16T02:38:39+00:00</updated><id>http://www.3crownsconsulting.com.au/feed.xml</id><title type="html">Data Science in the Wild</title><subtitle>Better techniques for getting more from your data.</subtitle><entry><title type="html">New features in scikit-learn part 1 — successive halving</title><link href="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html" rel="alternate" type="text/html" title="New features in scikit-learn part 1 — successive halving" /><published>2021-02-15T22:00:00+00:00</published><updated>2021-02-15T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html">&lt;h1 id=&quot;new-features-in-scikit-learn-024&quot;&gt;New features in scikit-learn 0.24&lt;/h1&gt;
+
+&lt;p&gt;Welcome to a short series of posts where I look at some of the new features introduced in &lt;a href=&quot;https://scikit-learn.org/stable/&quot;&gt;scikit-learn&lt;/a&gt; version 0.24, a newish release of the popuar Python machine learning library.&lt;/p&gt;
+
+&lt;h2 id=&quot;feature-1-successive-halving&quot;&gt;Feature #1: Successive Halving&lt;/h2&gt;
+
+&lt;p&gt;The first new feature we will examine is called ‘successive halving’. It is suggested as an alternative to &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html&quot;&gt;grid searches&lt;/a&gt; or &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html&quot;&gt;random searches&lt;/a&gt; for &lt;a href=&quot;https://en.wikipedia.org/wiki/Hyperparameter_optimization&quot;&gt;hyperparameter tuning&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Note that I prefer random searches in general because&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;the data scietist has more control over the execution time of the search; and&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf&quot;&gt;random searches can lean to a more accurate result&lt;/a&gt; compared with a grid search because they go “in between”
+the grid ‘lines’.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The idea with successive halving (which you can read more about &lt;a href=&quot;https://blog.ml.cmu.edu/2018/12/12/massively-parallel-hyperparameter-optimization/&quot;&gt;here&lt;/a&gt;  is that early in the search we use fewer ‘resources’ but search more candidates. ‘Resources’ usually referns to the number of samples used to git a learner, but &lt;em&gt;can&lt;/em&gt; be any aparmeter. Another sensible choice for multiple-tree-based learners (like &lt;a href=&quot;https://en.wikipedia.org/wiki/Random_forest&quot;&gt;random forests&lt;/a&gt; or &lt;a href=&quot;https://en.wikipedia.org/wiki/Gradient_boosting&quot;&gt;GBMs&lt;/a&gt;) is the number of trees fitted.&lt;/p&gt;
+
+&lt;h1 id=&quot;successive-halving-example&quot;&gt;Successive halving example&lt;/h1&gt;
+
+&lt;p&gt;So now we know what the successive halving does, let’s try it out on some real-world data. Unfortunately the examples in scikit-learn’s examples use only generated data, which I find too clinical to give an indication of what a classification algorithm might be like to use in anger.&lt;/p&gt;
+
+&lt;p&gt;The parameter &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factor&lt;/code&gt; sets the ‘halving’ or fraction rate. It determines the proportion of candidates that are selected for each subsequent iteration. For example, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factor=3&lt;/code&gt; means that only one third of the candidates are selected.&lt;/p&gt;
+
+&lt;p&gt;If we do &lt;em&gt;not&lt;/em&gt; specify a specific parameter, the default is to change the size of the sample at each halving iteration. In this way you can select a small sample across the grid space of hyperparameters that gets successively larger as you get closer to the optimum (at least theoretically).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;attachment:Paper.February_2021.1%202.png&quot; alt=&quot;Paper.February_2021.1%202.png&quot; /&gt;
+&lt;em&gt;&lt;strong&gt;Example of successive halving with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factor = 2&lt;/code&gt;&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;import-the-libraries-we-will-need&quot;&gt;Import the libraries we will need&lt;/h2&gt;
+
+&lt;p&gt;As usual, I like to import a few standard libraries so I can maniputate data frames and access the underlying OS.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
+
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pandas&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I also like to change the configuration of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pandas&lt;/code&gt; to show all the columns of a data frame.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'display.max_columns'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;lending-club&quot;&gt;Lending club&lt;/h2&gt;
+
+&lt;p&gt;We will use a sample of the &lt;a href=&quot;https://www.lendingclub.com&quot;&gt;&lt;strong&gt;Lending Club&lt;/strong&gt;&lt;/a&gt; data. This is a view of the data I have manipulated a little bit for education purposes, and you can download it &lt;a href=&quot;https://drive.google.com/file/d/1Rahuvn8LwKPNnch5lrhKvEyQHkZGZpuu/view?usp=sharing&quot;&gt;here&lt;/a&gt;. This data set contains details of loans, and we are interested in classifying loans that have gone ‘bad’ (that is, not repaid) against others.&lt;/p&gt;
+
+&lt;p&gt;The data is stored in CSV format, so we read it in using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pandas&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;data_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'~/repos/sklearn00/data'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;lending_filename&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'loan_stats_course.csv'&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;lending_df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_csv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lending_filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Examine the data.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;lending_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div&gt;
+&lt;style scoped=&quot;&quot;&gt;
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+&lt;/style&gt;
+&lt;table border=&quot;1&quot; class=&quot;dataframe&quot;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&quot;text-align: right;&quot;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;id&lt;/th&gt;
+      &lt;th&gt;member_id&lt;/th&gt;
+      &lt;th&gt;loan_amnt&lt;/th&gt;
+      &lt;th&gt;funded_amnt&lt;/th&gt;
+      &lt;th&gt;funded_amnt_inv&lt;/th&gt;
+      &lt;th&gt;term&lt;/th&gt;
+      &lt;th&gt;int_rate&lt;/th&gt;
+      &lt;th&gt;installment&lt;/th&gt;
+      &lt;th&gt;grade&lt;/th&gt;
+      &lt;th&gt;sub_grade&lt;/th&gt;
+      &lt;th&gt;emp_title&lt;/th&gt;
+      &lt;th&gt;emp_length&lt;/th&gt;
+      &lt;th&gt;home_ownership&lt;/th&gt;
+      &lt;th&gt;annual_inc&lt;/th&gt;
+      &lt;th&gt;is_inc_v&lt;/th&gt;
+      &lt;th&gt;issue_d&lt;/th&gt;
+      &lt;th&gt;loan_status&lt;/th&gt;
+      &lt;th&gt;pymnt_plan&lt;/th&gt;
+      &lt;th&gt;purpose&lt;/th&gt;
+      &lt;th&gt;zip_code&lt;/th&gt;
+      &lt;th&gt;addr_state&lt;/th&gt;
+      &lt;th&gt;dti&lt;/th&gt;
+      &lt;th&gt;delinq_2yrs&lt;/th&gt;
+      &lt;th&gt;inq_last_6mths&lt;/th&gt;
+      &lt;th&gt;mths_since_last_delinq&lt;/th&gt;
+      &lt;th&gt;mths_since_last_record&lt;/th&gt;
+      &lt;th&gt;open_acc&lt;/th&gt;
+      &lt;th&gt;pub_rec&lt;/th&gt;
+      &lt;th&gt;revol_bal&lt;/th&gt;
+      &lt;th&gt;revol_util&lt;/th&gt;
+      &lt;th&gt;total_acc&lt;/th&gt;
+      &lt;th&gt;initial_list_status&lt;/th&gt;
+      &lt;th&gt;out_prncp&lt;/th&gt;
+      &lt;th&gt;out_prncp_inv&lt;/th&gt;
+      &lt;th&gt;total_pymnt&lt;/th&gt;
+      &lt;th&gt;total_pymnt_inv&lt;/th&gt;
+      &lt;th&gt;total_rec_prncp&lt;/th&gt;
+      &lt;th&gt;total_rec_int&lt;/th&gt;
+      &lt;th&gt;total_rec_late_fee&lt;/th&gt;
+      &lt;th&gt;recoveries&lt;/th&gt;
+      &lt;th&gt;collection_recovery_fee&lt;/th&gt;
+      &lt;th&gt;last_pymnt_amnt&lt;/th&gt;
+      &lt;th&gt;next_pymnt_d&lt;/th&gt;
+      &lt;th&gt;collections_12_mths_ex_med&lt;/th&gt;
+      &lt;th&gt;mths_since_last_major_derog&lt;/th&gt;
+      &lt;th&gt;policy_code&lt;/th&gt;
+      &lt;th&gt;bad_loan&lt;/th&gt;
+      &lt;th&gt;credit_length_in_years&lt;/th&gt;
+      &lt;th&gt;earned&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;td&gt;1077430&lt;/td&gt;
+      &lt;td&gt;1314167&lt;/td&gt;
+      &lt;td&gt;2500&lt;/td&gt;
+      &lt;td&gt;2500&lt;/td&gt;
+      &lt;td&gt;2500.0&lt;/td&gt;
+      &lt;td&gt;60 months&lt;/td&gt;
+      &lt;td&gt;15.27&lt;/td&gt;
+      &lt;td&gt;59.83&lt;/td&gt;
+      &lt;td&gt;C&lt;/td&gt;
+      &lt;td&gt;C4&lt;/td&gt;
+      &lt;td&gt;Ryder&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;RENT&lt;/td&gt;
+      &lt;td&gt;30000.0&lt;/td&gt;
+      &lt;td&gt;Source Verified&lt;/td&gt;
+      &lt;td&gt;Dec-2011&lt;/td&gt;
+      &lt;td&gt;Charged Off&lt;/td&gt;
+      &lt;td&gt;n&lt;/td&gt;
+      &lt;td&gt;car&lt;/td&gt;
+      &lt;td&gt;309xx&lt;/td&gt;
+      &lt;td&gt;GA&lt;/td&gt;
+      &lt;td&gt;1.00&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;5.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;3.0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;1687&lt;/td&gt;
+      &lt;td&gt;9.4&lt;/td&gt;
+      &lt;td&gt;4.0&lt;/td&gt;
+      &lt;td&gt;f&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;1008.710000&lt;/td&gt;
+      &lt;td&gt;1008.71&lt;/td&gt;
+      &lt;td&gt;456.46&lt;/td&gt;
+      &lt;td&gt;435.17&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;117.08&lt;/td&gt;
+      &lt;td&gt;1.11&lt;/td&gt;
+      &lt;td&gt;119.66&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;12.0&lt;/td&gt;
+      &lt;td&gt;-1491.290000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;td&gt;1077175&lt;/td&gt;
+      &lt;td&gt;1313524&lt;/td&gt;
+      &lt;td&gt;2400&lt;/td&gt;
+      &lt;td&gt;2400&lt;/td&gt;
+      &lt;td&gt;2400.0&lt;/td&gt;
+      &lt;td&gt;36 months&lt;/td&gt;
+      &lt;td&gt;15.96&lt;/td&gt;
+      &lt;td&gt;84.33&lt;/td&gt;
+      &lt;td&gt;C&lt;/td&gt;
+      &lt;td&gt;C5&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;10.0&lt;/td&gt;
+      &lt;td&gt;RENT&lt;/td&gt;
+      &lt;td&gt;12252.0&lt;/td&gt;
+      &lt;td&gt;Not Verified&lt;/td&gt;
+      &lt;td&gt;Dec-2011&lt;/td&gt;
+      &lt;td&gt;Fully Paid&lt;/td&gt;
+      &lt;td&gt;n&lt;/td&gt;
+      &lt;td&gt;small_business&lt;/td&gt;
+      &lt;td&gt;606xx&lt;/td&gt;
+      &lt;td&gt;IL&lt;/td&gt;
+      &lt;td&gt;8.72&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;2.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;2.0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;2956&lt;/td&gt;
+      &lt;td&gt;98.5&lt;/td&gt;
+      &lt;td&gt;10.0&lt;/td&gt;
+      &lt;td&gt;f&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;3003.653644&lt;/td&gt;
+      &lt;td&gt;3003.65&lt;/td&gt;
+      &lt;td&gt;2400.00&lt;/td&gt;
+      &lt;td&gt;603.65&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;0.00&lt;/td&gt;
+      &lt;td&gt;0.00&lt;/td&gt;
+      &lt;td&gt;649.91&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;10.0&lt;/td&gt;
+      &lt;td&gt;603.653644&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;td&gt;1071795&lt;/td&gt;
+      &lt;td&gt;1306957&lt;/td&gt;
+      &lt;td&gt;5600&lt;/td&gt;
+      &lt;td&gt;5600&lt;/td&gt;
+      &lt;td&gt;5600.0&lt;/td&gt;
+      &lt;td&gt;60 months&lt;/td&gt;
+      &lt;td&gt;21.28&lt;/td&gt;
+      &lt;td&gt;152.39&lt;/td&gt;
+      &lt;td&gt;F&lt;/td&gt;
+      &lt;td&gt;F2&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;4.0&lt;/td&gt;
+      &lt;td&gt;OWN&lt;/td&gt;
+      &lt;td&gt;40000.0&lt;/td&gt;
+      &lt;td&gt;Source Verified&lt;/td&gt;
+      &lt;td&gt;Dec-2011&lt;/td&gt;
+      &lt;td&gt;Charged Off&lt;/td&gt;
+      &lt;td&gt;n&lt;/td&gt;
+      &lt;td&gt;small_business&lt;/td&gt;
+      &lt;td&gt;958xx&lt;/td&gt;
+      &lt;td&gt;CA&lt;/td&gt;
+      &lt;td&gt;5.55&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;2.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;11.0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;5210&lt;/td&gt;
+      &lt;td&gt;32.6&lt;/td&gt;
+      &lt;td&gt;13.0&lt;/td&gt;
+      &lt;td&gt;f&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;646.020000&lt;/td&gt;
+      &lt;td&gt;646.02&lt;/td&gt;
+      &lt;td&gt;162.02&lt;/td&gt;
+      &lt;td&gt;294.94&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;189.06&lt;/td&gt;
+      &lt;td&gt;2.09&lt;/td&gt;
+      &lt;td&gt;152.39&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;7.0&lt;/td&gt;
+      &lt;td&gt;-4953.980000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;td&gt;1071570&lt;/td&gt;
+      &lt;td&gt;1306721&lt;/td&gt;
+      &lt;td&gt;5375&lt;/td&gt;
+      &lt;td&gt;5375&lt;/td&gt;
+      &lt;td&gt;5350.0&lt;/td&gt;
+      &lt;td&gt;60 months&lt;/td&gt;
+      &lt;td&gt;12.69&lt;/td&gt;
+      &lt;td&gt;121.45&lt;/td&gt;
+      &lt;td&gt;B&lt;/td&gt;
+      &lt;td&gt;B5&lt;/td&gt;
+      &lt;td&gt;Starbucks&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;RENT&lt;/td&gt;
+      &lt;td&gt;15000.0&lt;/td&gt;
+      &lt;td&gt;Verified&lt;/td&gt;
+      &lt;td&gt;Dec-2011&lt;/td&gt;
+      &lt;td&gt;Charged Off&lt;/td&gt;
+      &lt;td&gt;n&lt;/td&gt;
+      &lt;td&gt;other&lt;/td&gt;
+      &lt;td&gt;774xx&lt;/td&gt;
+      &lt;td&gt;TX&lt;/td&gt;
+      &lt;td&gt;18.08&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;2.0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;9279&lt;/td&gt;
+      &lt;td&gt;36.5&lt;/td&gt;
+      &lt;td&gt;3.0&lt;/td&gt;
+      &lt;td&gt;f&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;1476.190000&lt;/td&gt;
+      &lt;td&gt;1469.34&lt;/td&gt;
+      &lt;td&gt;673.48&lt;/td&gt;
+      &lt;td&gt;533.42&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;269.29&lt;/td&gt;
+      &lt;td&gt;2.52&lt;/td&gt;
+      &lt;td&gt;121.45&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;7.0&lt;/td&gt;
+      &lt;td&gt;-3898.810000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4&lt;/th&gt;
+      &lt;td&gt;1070078&lt;/td&gt;
+      &lt;td&gt;1305201&lt;/td&gt;
+      &lt;td&gt;6500&lt;/td&gt;
+      &lt;td&gt;6500&lt;/td&gt;
+      &lt;td&gt;6500.0&lt;/td&gt;
+      &lt;td&gt;60 months&lt;/td&gt;
+      &lt;td&gt;14.65&lt;/td&gt;
+      &lt;td&gt;153.45&lt;/td&gt;
+      &lt;td&gt;C&lt;/td&gt;
+      &lt;td&gt;C3&lt;/td&gt;
+      &lt;td&gt;Southwest Rural metro&lt;/td&gt;
+      &lt;td&gt;5.0&lt;/td&gt;
+      &lt;td&gt;OWN&lt;/td&gt;
+      &lt;td&gt;72000.0&lt;/td&gt;
+      &lt;td&gt;Not Verified&lt;/td&gt;
+      &lt;td&gt;Dec-2011&lt;/td&gt;
+      &lt;td&gt;Fully Paid&lt;/td&gt;
+      &lt;td&gt;n&lt;/td&gt;
+      &lt;td&gt;debt_consolidation&lt;/td&gt;
+      &lt;td&gt;853xx&lt;/td&gt;
+      &lt;td&gt;AZ&lt;/td&gt;
+      &lt;td&gt;16.12&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;2.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;14.0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;4032&lt;/td&gt;
+      &lt;td&gt;20.6&lt;/td&gt;
+      &lt;td&gt;23.0&lt;/td&gt;
+      &lt;td&gt;f&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;7677.520000&lt;/td&gt;
+      &lt;td&gt;7677.52&lt;/td&gt;
+      &lt;td&gt;6500.00&lt;/td&gt;
+      &lt;td&gt;1177.52&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;0.00&lt;/td&gt;
+      &lt;td&gt;0.00&lt;/td&gt;
+      &lt;td&gt;1655.54&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;13.0&lt;/td&gt;
+      &lt;td&gt;1177.520000&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Get a list of all the columns. Later we will remove the columns we are not using and identify which colums are categorical and which are numeric.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;all_columns&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lending_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;columns&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tolist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Remove some of the variables that indicate a bad loan and would represent &lt;a href=&quot;https://en.wikipedia.org/wiki/Leakage_(machine_learning)&quot;&gt;&lt;strong&gt;target leakage&lt;/strong&gt;&lt;/a&gt;. These columns are in the data set because Lending Club only provides a current snapshot of their loans. To avoid the leakage problem we ideally want time-stamped transactions within a relational database.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;to_remove&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'issue_d'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'emp_title'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'zip_code'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'earned'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'total_rec_prncp'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'recoveries'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'total_rec_int'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+             &lt;span class=&quot;s&quot;&gt;'total_rec_late_fee'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'collection_recovery_fee'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'next_pyment_d'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'loan_status'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'pymnt_plan'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+             &lt;span class=&quot;s&quot;&gt;'id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'member_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'out_prncp'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'out_prncp_inv'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'total_pymnt'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'total_pymnt_inv'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'last_pymnt_amnt'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+             &lt;span class=&quot;s&quot;&gt;'next_pymnt_d'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'collections_12_mths_ex_med'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'mths_since_last_major_derog'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'policy_code'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+             &lt;span class=&quot;s&quot;&gt;'credit_length_in_years'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Identify the columns that should be converted from string to categorical.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;cat_features&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'term'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'grade'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'sub_grade'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'home_ownership'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                      &lt;span class=&quot;s&quot;&gt;'is_inc_v'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'purpose'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'addr_state'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                      &lt;span class=&quot;s&quot;&gt;'initial_list_status'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The target column is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bad_loan&lt;/code&gt;. It takes values of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1&lt;/code&gt; for a bad loan and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0&lt;/code&gt; for one which has not gone bad (or not gone bad &lt;em&gt;yet&lt;/em&gt; in some cases).&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'bad_loan'&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;to_remove&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Get a list of all the predictors and numeric features.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;predictors&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;all_columns&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to_remove&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;num_features&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;predictors&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cat_features&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Check the shape of the data so we have an idea of how many rows we have to train and test our classifier with.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;lending_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;(36842, 49)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We have 36,842 rows to play with.&lt;/p&gt;
+
+&lt;h3 id=&quot;split-into-training-and-test-sets&quot;&gt;Split into training and test sets&lt;/h3&gt;
+
+&lt;p&gt;We will train against a separate data set from the one we will test our trained classifier against, using scikit-learn’s &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;train_test_split&lt;/code&gt;&lt;/a&gt; to partition the data set randomly.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sklearn.model_selection&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;train_test_split&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I am going to fix the test size at 5,000; this seems like a good enough number while retaining plenty of sample to train the classifier.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; I like to specify parameters as keyword arguments. This way we can load configuration files if we want when we run from a script without having to edit the code. This is much better than having to changing values within our script for a simple change.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# It would be quite easy to stick these in a file and read them in
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split_config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;random_state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1737&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;test_size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5000&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;X_train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y_train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y_test&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;train_test_split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lending_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;predictors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lending_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split_config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Check that we get the right number of rows back in the test set. I like to check things are as they should be (at least in my mind) so I write tests.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;split_config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'test_size'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Examine the distribution of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bad_loans&lt;/code&gt; in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;y_train&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;y_train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value_counts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;0    26693
+1     5149
+Name: bad_loan, dtype: int64
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;build-a-simple-classifier&quot;&gt;Build a simple classifier&lt;/h2&gt;
+
+&lt;p&gt;For this example I will use scikit-learn’s &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GradientBoostingClassifier&lt;/code&gt;&lt;/a&gt;. I shall also use the excellent &lt;a href=&quot;https://scikit-learn.org/stable/modules/compose.html#combining-estimators&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Pipeline&lt;/code&gt;&lt;/a&gt; capability of scikit-learn to build our classifier. This allows us to combine our preprocessing and classifier into the one composite classifier object. There are many good reasons to do this that I will not go into further here.&lt;/p&gt;
+
+&lt;p&gt;One I will mention is that we cab perform a search over preprocessing parameters if we like, though I am not doing that here.&lt;/p&gt;
+
+&lt;p&gt;To encode the categorical variables, we will use &lt;a href=&quot;http://contrib.scikit-learn.org/category_encoders/catboost.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CatBoostEncoder&lt;/code&gt;&lt;/a&gt; from &lt;a href=&quot;http://contrib.scikit-learn.org/category_encoders/&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;category_encoders&lt;/code&gt;&lt;/a&gt;, which you can install using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pip&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;category_encoders
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sklearn.ensemble&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GradientBoostingClassifier&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sklearn.pipeline&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Pipeline&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sklearn.compose&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ColumnTransformer&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sklearn.metrics&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;roc_auc_score&lt;/span&gt;
+
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;category_encoders&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ce&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sklearn.impute&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SimpleImputer&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;set-up-the-pipelines&quot;&gt;Set up the pipelines&lt;/h3&gt;
+
+&lt;p&gt;The pipeline we will set up has two steps.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;The preprocessor, which will use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CatBoostEncoder&lt;/code&gt; for categorical features and &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SimpleImputer&lt;/code&gt;&lt;/a&gt; for numeric
+features.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;A &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GradientBoostingClassifier&lt;/code&gt; as the model.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;We combine the two preprocessors using &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.compose.ColumnTransformer.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ColumnTransformer&lt;/code&gt;&lt;/a&gt;, which uses takes a tuple of the format &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;(name, transformer, columns)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;preprocessor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ColumnTransformer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;transformers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'categorical'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CatBoostEncoder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cat_features&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'numeric'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SimpleImputer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num_features&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;check_array&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;preprocessor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit_transform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X_train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y_train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;check_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;predictors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;feature_names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cat_features&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num_features&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Check whether &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;check_array&lt;/code&gt; contains &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NaN&lt;/code&gt;s.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isnan&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;check_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Create and test our classifier. Remember, this will become a step in our pipeline.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;gbm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GradientBoostingClassifier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here I test if the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fit&lt;/code&gt; method runs using a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;try … except&lt;/code&gt; construct.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;gbm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;check_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y_train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;except&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'Bad gbm fit'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now let us create a pipeline that includes our GBM. We name each step of the pipeline so we can refer to parameters in each of the steps.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;gbm_pipeline&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Pipeline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'preprocessor'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;preprocessor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'gbm'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gbm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can refer to parameters in a pipeline by using the format &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;name&lt;/code&gt;&lt;/strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;__&lt;/code&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parameter&lt;/code&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;param_grid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'gbm__n_estimators'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'gbm__max_depth'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'gbm__min_samples_leaf'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'gbm__learning_rate'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.15&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'gbm__subsample'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To set a parameter for a one-off fit, we use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;set_params&lt;/code&gt; method. Here we are setting the parameters to get a pretty-good model using default parameters. We will compare the results from this with those from successive halving later.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;gbm_pipeline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;param_grid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Pipeline(steps=[('preprocessor',
+                 ColumnTransformer(transformers=[('categorical',
+                                                  CatBoostEncoder(),
+                                                  ['term', 'grade', 'sub_grade',
+                                                   'home_ownership', 'is_inc_v',
+                                                   'purpose', 'addr_state',
+                                                   'initial_list_status']),
+                                                 ('numeric', SimpleImputer(),
+                                                  ['loan_amnt', 'funded_amnt',
+                                                   'funded_amnt_inv',
+                                                   'int_rate', 'installment',
+                                                   'emp_length', 'annual_inc',
+                                                   'dti', 'delinq_2yrs',
+                                                   'inq_last_6mths',
+                                                   'mths_since_last_delinq',
+                                                   'mths_since_last_record',
+                                                   'open_acc', 'pub_rec',
+                                                   'revol_bal', 'revol_util',
+                                                   'total_acc'])])),
+                ('gbm',
+                 GradientBoostingClassifier(learning_rate=0.15, max_depth=1,
+                                            min_samples_leaf=30,
+                                            n_estimators=20))])
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Test that it runs.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;gbm_pipeline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X_train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y_train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;except&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'Bad pipeline fit'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;check-the-performance-of-the-basic-model&quot;&gt;Check the performance of the basic model&lt;/h3&gt;
+
+&lt;p&gt;To give a baseline of the performance of our basic model that we fit in the previous step, we calculate the &lt;a href=&quot;https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc&quot;&gt;area under the receiver operating characteristic curve (ROC)&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;y_pred&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gbm_pipeline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;predict_proba&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[:,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;baseline_auc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;roc_auc_score&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y_pred&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;f'The baseline AUC performance is &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;baseline_auc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;The baseline AUC performance is 0.696.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This model is one we expect to be okay, if not spectacular.&lt;/p&gt;
+
+&lt;h2 id=&quot;test-successive-halving&quot;&gt;Test successive halving&lt;/h2&gt;
+
+&lt;p&gt;Successive halving is still an experimental feature, so we need to turn it on explicitly.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# explicitly require this experimental feature
+&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sklearn.experimental&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;enable_halving_search_cv&lt;/span&gt;  
+
+&lt;span class=&quot;c1&quot;&gt;# now you can import normally from model_selection
+&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sklearn.model_selection&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HalvingGridSearchCV&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sklearn.model_selection&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HalvingRandomSearchCV&lt;/span&gt;
+
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scipy&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Check how many rows we have in our training set.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;X_train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;31842
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We have 31,842 rows in our training data set, so we will set the starting number of minimum resources to 256. This will double at each iteration until we hit the limit.&lt;/p&gt;
+
+&lt;p&gt;Set the parameter grid for the search.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;param_grid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'gbm__n_estimators'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scipy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2001&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'gbm__n_iter_no_change'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'gbm__max_depth'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scipy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'gbm__min_samples_leaf'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scipy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;51&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'gbm__learning_rate'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scipy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uniform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.01&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'gbm__subsample'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Set some configurable parameters for the &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.HalvingRandomSearchCV.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HalvingRandomSearchCV&lt;/code&gt;&lt;/a&gt; we will run. We will use the number of samples as the resource and use AUC (area under the curve) to evaluate the best model.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hrs_params&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;verbose&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;factor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'n_samples'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;min_resources&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scoring&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'roc_auc'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                  &lt;span class=&quot;n&quot;&gt;random_state&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1707&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I like to note how much time potentially long-running cells take to execute. Do this easily in Jupyter with the &lt;a href=&quot;https://ipython.readthedocs.io/en/stable/interactive/magics.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%%time&lt;/code&gt; cell magic&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hrs_params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'random_state'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HalvingRandomSearchCV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gbm_pipeline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;param_grid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hrs_params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X_train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y_train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;n_iterations: 7
+n_required_iterations: 7
+n_possible_iterations: 7
+min_resources_: 256
+max_resources_: 31842
+aggressive_elimination: False
+factor: 2
+----------
+iter: 0
+n_candidates: 124
+n_resources: 256
+Fitting 5 folds for each of 124 candidates, totalling 620 fits
+----------
+iter: 1
+n_candidates: 62
+n_resources: 512
+Fitting 5 folds for each of 62 candidates, totalling 310 fits
+----------
+iter: 2
+n_candidates: 31
+n_resources: 1024
+Fitting 5 folds for each of 31 candidates, totalling 155 fits
+----------
+iter: 3
+n_candidates: 16
+n_resources: 2048
+Fitting 5 folds for each of 16 candidates, totalling 80 fits
+----------
+iter: 4
+n_candidates: 8
+n_resources: 4096
+Fitting 5 folds for each of 8 candidates, totalling 40 fits
+----------
+iter: 5
+n_candidates: 4
+n_resources: 8192
+Fitting 5 folds for each of 4 candidates, totalling 20 fits
+----------
+iter: 6
+n_candidates: 2
+n_resources: 16384
+Fitting 5 folds for each of 2 candidates, totalling 10 fits
+CPU times: user 7min 40s, sys: 1.19 s, total: 7min 41s
+Wall time: 7min 42s
+
+
+
+
+
+HalvingRandomSearchCV(estimator=Pipeline(steps=[('preprocessor',
+                                                 ColumnTransformer(transformers=[('categorical',
+                                                                                  CatBoostEncoder(),
+                                                                                  ['term',
+                                                                                   'grade',
+                                                                                   'sub_grade',
+                                                                                   'home_ownership',
+                                                                                   'is_inc_v',
+                                                                                   'purpose',
+                                                                                   'addr_state',
+                                                                                   'initial_list_status']),
+                                                                                 ('numeric',
+                                                                                  SimpleImputer(),
+                                                                                  ['loan_amnt',
+                                                                                   'funded_amnt',
+                                                                                   'funded_amnt_inv',
+                                                                                   'int_rate',
+                                                                                   'installment',
+                                                                                   'emp_length',
+                                                                                   'annual_...
+                                           'gbm__max_depth': &amp;lt;scipy.stats._distn_infrastructure.rv_frozen object at 0x7fa3353f3910&amp;gt;,
+                                           'gbm__min_samples_leaf': &amp;lt;scipy.stats._distn_infrastructure.rv_frozen object at 0x7fa3354bad00&amp;gt;,
+                                           'gbm__n_estimators': &amp;lt;scipy.stats._distn_infrastructure.rv_frozen object at 0x7fa3354ba910&amp;gt;,
+                                           'gbm__n_iter_no_change': [50],
+                                           'gbm__subsample': [1.0]},
+                      random_state=1707,
+                      refit=&amp;lt;function _refit_callable at 0x7fa3335f0280&amp;gt;,
+                      scoring='roc_auc', verbose=1)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This took 6 iterations and around 8 minutes on my machine.&lt;/p&gt;
+
+&lt;p&gt;Note that at each step the number of candidates halved until we got to two in the final step.&lt;/p&gt;
+
+&lt;p&gt;Once successive halving has settled on a final candidate, it fits it using the whole sample.&lt;/p&gt;
+
+&lt;p&gt;Examine the parameters of the best and final estimator.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;best_estimator_&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Pipeline(steps=[('preprocessor',
+                 ColumnTransformer(transformers=[('categorical',
+                                                  CatBoostEncoder(),
+                                                  ['term', 'grade', 'sub_grade',
+                                                   'home_ownership', 'is_inc_v',
+                                                   'purpose', 'addr_state',
+                                                   'initial_list_status']),
+                                                 ('numeric', SimpleImputer(),
+                                                  ['loan_amnt', 'funded_amnt',
+                                                   'funded_amnt_inv',
+                                                   'int_rate', 'installment',
+                                                   'emp_length', 'annual_inc',
+                                                   'dti', 'delinq_2yrs',
+                                                   'inq_last_6mths',
+                                                   'mths_since_last_delinq',
+                                                   'mths_since_last_record',
+                                                   'open_acc', 'pub_rec',
+                                                   'revol_bal', 'revol_util',
+                                                   'total_acc'])])),
+                ('gbm',
+                 GradientBoostingClassifier(learning_rate=0.37976865555958783,
+                                            max_depth=1, min_samples_leaf=16,
+                                            n_estimators=1500,
+                                            n_iter_no_change=50))])
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can check how the scoring progressed in each iteration. Recall our baseline AUC score is 0.696.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;res_df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cv_results_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;res_df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groupby&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'iter'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'mean_test_score'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;iter
+0    0.618091
+1    0.652617
+2    0.648898
+3    0.695115
+4    0.717969
+5    0.725628
+6    0.727079
+Name: mean_test_score, dtype: float64
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Accoring to the cross-validation AUC score on the &lt;em&gt;training&lt;/em&gt; set, successive halving produced a better model than the naive GBM after iteration 4.&lt;/p&gt;
+
+&lt;p&gt;Check the performance of the final model against the test set. This will show us whether the performance has improved compared with the initial baseline model we fit against the same test set.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;preds_test&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;best_estimator_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;predict_proba&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[:,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;baseline_auc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;roc_auc_score&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y_pred&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;rsh_auc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;roc_auc_score&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;preds_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;rsh_auc&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;0.7233991664802961
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We got an AUC score of 0.723 which is better than 0.696 — a definite improvement.&lt;/p&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;The successive halving approach is a reasonable algorithm that does the same sort of thing that I advise learning data scientists to do. That is, perform searches using smaller samples at first to cut down processing time. Once we have a good idea of the best parameters, fit against a large sample to improve the precision of the estimators.&lt;/p&gt;
+
+&lt;p&gt;Of course, one could argue the position that the parameters of the successive halving are additional hyperparameters that need to be optimised on. But that would send you down the &lt;strong&gt;rabbit hole&lt;/strong&gt; and distract you from this fact: for most purposes, a good model is not significantly better than the best model. Your time is usually better spent ensuring the entire problem solving process, end-to-end pipeline and experimental design are also ‘good enough’.&lt;/p&gt;</content><author><name></name></author><category term="machine-learning" /><category term="sklearn" /><summary type="html">New features in scikit-learn 0.24</summary></entry><entry><title type="html">The case for Markdown everywhere</title><link href="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html" rel="alternate" type="text/html" title="The case for Markdown everywhere" /><published>2020-12-08T22:00:00+00:00</published><updated>2020-12-08T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/markdown/2020/12/08/the-case-for-markdown-everywhere.html">&lt;h1 id=&quot;why-i-love-markdown-and-want-to-see-its-use-become-more-widespread&quot;&gt;&lt;em&gt;Why I love Markdown and want to see its use become more widespread&lt;/em&gt;&lt;/h1&gt;
 
 &lt;h2 id=&quot;intro&quot;&gt;Intro&lt;/h2&gt;
 
