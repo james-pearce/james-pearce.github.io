@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://www.3crownsconsulting.com.au/feed.xml" rel="self" type="application/atom+xml" /><link href="http://www.3crownsconsulting.com.au/" rel="alternate" type="text/html" /><updated>2021-02-16T03:02:33+00:00</updated><id>http://www.3crownsconsulting.com.au/feed.xml</id><title type="html">Data Science in the Wild</title><subtitle>Better techniques for getting more from your data.</subtitle><entry><title type="html">New features in scikit-learn part 1 — successive halving</title><link href="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html" rel="alternate" type="text/html" title="New features in scikit-learn part 1 — successive halving" /><published>2021-02-15T22:00:00+00:00</published><updated>2021-02-15T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html">&lt;h1 id=&quot;new-features-in-scikit-learn-024&quot;&gt;New features in scikit-learn 0.24&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://www.3crownsconsulting.com.au/feed.xml" rel="self" type="application/atom+xml" /><link href="http://www.3crownsconsulting.com.au/" rel="alternate" type="text/html" /><updated>2021-02-16T21:41:06+00:00</updated><id>http://www.3crownsconsulting.com.au/feed.xml</id><title type="html">Data Science in the Wild</title><subtitle>Better techniques for getting more from your data.</subtitle><entry><title type="html">New features in scikit-learn part 1 — successive halving</title><link href="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html" rel="alternate" type="text/html" title="New features in scikit-learn part 1 — successive halving" /><published>2021-02-15T22:00:00+00:00</published><updated>2021-02-15T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html">&lt;h1 id=&quot;new-features-in-scikit-learn-024&quot;&gt;New features in scikit-learn 0.24&lt;/h1&gt;
 
-&lt;p&gt;Welcome to a short series of posts where I look at some of the new features introduced in &lt;a href=&quot;https://scikit-learn.org/stable/&quot;&gt;scikit-learn&lt;/a&gt; version 0.24, a newish release of the popuar Python machine learning library.&lt;/p&gt;
+&lt;p&gt;Welcome to a short series of posts where I look at some of the new features introduced in &lt;a href=&quot;https://scikit-learn.org/stable/&quot;&gt;scikit-learn&lt;/a&gt; version 0.24, a newish release of the popular Python machine learning library.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;You can find a copy of this Jupyter notebook &lt;a href=&quot;https://drive.google.com/file/d/1T_7sTm0GvMLJFMTQbxtRJM4HTZWqD0-z/view?usp=sharing&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;h2 id=&quot;feature-1-successive-halving&quot;&gt;Feature #1: Successive Halving&lt;/h2&gt;
 
@@ -9,12 +13,12 @@
 &lt;p&gt;Note that I prefer random searches in general because&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;the data scietist has more control over the execution time of the search; and&lt;/li&gt;
+  &lt;li&gt;the data scientist has more control over the execution time of the search; and&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf&quot;&gt;random searches can lean to a more accurate result&lt;/a&gt; compared with a grid search because they go “in between”
 the grid ‘lines’.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;The idea with successive halving (which you can read more about &lt;a href=&quot;https://blog.ml.cmu.edu/2018/12/12/massively-parallel-hyperparameter-optimization/&quot;&gt;here&lt;/a&gt;  is that early in the search we use fewer ‘resources’ but search more candidates. ‘Resources’ usually referns to the number of samples used to git a learner, but &lt;em&gt;can&lt;/em&gt; be any aparmeter. Another sensible choice for multiple-tree-based learners (like &lt;a href=&quot;https://en.wikipedia.org/wiki/Random_forest&quot;&gt;random forests&lt;/a&gt; or &lt;a href=&quot;https://en.wikipedia.org/wiki/Gradient_boosting&quot;&gt;GBMs&lt;/a&gt;) is the number of trees fitted.&lt;/p&gt;
+&lt;p&gt;The idea with successive halving (which you can read more about &lt;a href=&quot;https://blog.ml.cmu.edu/2018/12/12/massively-parallel-hyperparameter-optimization/&quot;&gt;here&lt;/a&gt;  is that early in the search we use fewer ‘resources’ but search more candidates. ‘Resources’ usually refers to the number of samples used to git a learner, but &lt;em&gt;can&lt;/em&gt; be any parameter. Another sensible choice for multiple-tree-based learners (like &lt;a href=&quot;https://en.wikipedia.org/wiki/Random_forest&quot;&gt;random forests&lt;/a&gt; or &lt;a href=&quot;https://en.wikipedia.org/wiki/Gradient_boosting&quot;&gt;GBMs&lt;/a&gt;) is the number of trees fitted.&lt;/p&gt;
 
 &lt;h1 id=&quot;successive-halving-example&quot;&gt;Successive halving example&lt;/h1&gt;
 
@@ -29,7 +33,7 @@ the grid ‘lines’.&lt;/li&gt;
 
 &lt;h2 id=&quot;import-the-libraries-we-will-need&quot;&gt;Import the libraries we will need&lt;/h2&gt;
 
-&lt;p&gt;As usual, I like to import a few standard libraries so I can maniputate data frames and access the underlying OS.&lt;/p&gt;
+&lt;p&gt;As usual, I like to import a few standard libraries so I can manipulate data frames and access the underlying OS.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
 
@@ -803,7 +807,7 @@ HalvingRandomSearchCV(estimator=Pipeline(steps=[('preprocessor',
 Name: mean_test_score, dtype: float64
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Accoring to the cross-validation AUC score on the &lt;em&gt;training&lt;/em&gt; set, successive halving produced a better model than the naive GBM after iteration 4.&lt;/p&gt;
+&lt;p&gt;According to the cross-validation AUC score on the &lt;em&gt;training&lt;/em&gt; set, successive halving produced a better model than the naive GBM after iteration 4.&lt;/p&gt;
 
 &lt;p&gt;Check the performance of the final model against the test set. This will show us whether the performance has improved compared with the initial baseline model we fit against the same test set.&lt;/p&gt;
 
