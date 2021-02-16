@@ -32,7 +32,7 @@ If we do _not_ specify a specific parameter, the default is to change the size o
 
 
 
-![Paper.February_2021.1%202.png](attachment:Paper.February_2021.1%202.png)
+![Illustration of successive halving](/assets/Paper.February_2021.1%202.png)
 _**Example of successive halving with `factor = 2`**_
 
 ## Import the libraries we will need
