@@ -1,3 +1,9 @@
+---
+layout: post
+title:  "New features in scikit-learn part 1 — successive halving"
+date:   2021-02-16 09:00:00 +1100
+categories: machine-learning sklearn
+---
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
@@ -4551,7 +4557,7 @@ form{
   .bp3-running-text table th, table.bp3-html-table th{
     color:#182026;
     font-weight:600; }
-  
+
   .bp3-running-text table td,
   table.bp3-html-table td{
     color:#182026; }
@@ -14238,17 +14244,17 @@ a.anchor-link {
                 },
                 displayAlign: 'center',
                 CommonHTML: {
-                    linebreaks: { 
-                    automatic: true 
+                    linebreaks: {
+                    automatic: true
                     }
                 },
                 "HTML-CSS": {
-                    linebreaks: { 
-                    automatic: true 
+                    linebreaks: {
+                    automatic: true
                     }
                 }
             });
-        
+
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
     }
@@ -14264,7 +14270,7 @@ a.anchor-link {
 <p>Note that I prefer random searches in general because</p>
 <ol>
 <li>the data scietist has more control over the execution time of the search; and</li>
-<li><a href="https://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf">random searches can lean to a more accurate result</a> compared with a grid search because they go "in between" 
+<li><a href="https://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf">random searches can lean to a more accurate result</a> compared with a grid search because they go "in between"
 the grid 'lines'.</li>
 </ol>
 
@@ -14389,7 +14395,7 @@ the grid 'lines'.</li>
 
 <div class="jp-OutputArea-child">
 
-    
+
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
 
 
@@ -14885,7 +14891,7 @@ the grid 'lines'.</li>
 
 <div class="jp-OutputArea-child">
 
-    
+
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
 
 
@@ -15013,7 +15019,7 @@ the grid 'lines'.</li>
 
 <div class="jp-OutputArea-child">
 
-    
+
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
 
 
@@ -15071,7 +15077,7 @@ Name: bad_loan, dtype: int64</pre>
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Set-up-the-pipelines">Set up the pipelines<a class="anchor-link" href="#Set-up-the-pipelines">&#182;</a></h3><p>The pipeline we will set up has two steps.</p>
 <ol>
-<li><p>The preprocessor, which will use <code>CatBoostEncoder</code> for categorical features and <a href="https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html"><code>SimpleImputer</code></a> for numeric 
+<li><p>The preprocessor, which will use <code>CatBoostEncoder</code> for categorical features and <a href="https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html"><code>SimpleImputer</code></a> for numeric
 features.</p>
 </li>
 <li><p>A <code>GradientBoostingClassifier</code> as the model.</p>
@@ -15195,7 +15201,7 @@ features.</p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">gbm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">check_array</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="k">except</span><span class="p">:</span> 
+<span class="k">except</span><span class="p">:</span>
     <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Bad gbm fit&#39;</span>
 </pre></div>
 
@@ -15280,7 +15286,7 @@ features.</p>
 
 <div class="jp-OutputArea-child">
 
-    
+
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[27]:</div>
 
 
@@ -15383,7 +15389,7 @@ features.</p>
 
 <div class="jp-OutputArea-child">
 
-    
+
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
 
@@ -15416,7 +15422,7 @@ features.</p>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># explicitly require this experimental feature</span>
-<span class="kn">from</span> <span class="nn">sklearn.experimental</span> <span class="kn">import</span> <span class="n">enable_halving_search_cv</span>  
+<span class="kn">from</span> <span class="nn">sklearn.experimental</span> <span class="kn">import</span> <span class="n">enable_halving_search_cv</span>
 
 <span class="c1"># now you can import normally from model_selection</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">HalvingGridSearchCV</span>
@@ -15457,7 +15463,7 @@ features.</p>
 
 <div class="jp-OutputArea-child">
 
-    
+
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[32]:</div>
 
 
@@ -15514,7 +15520,7 @@ features.</p>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># config</span>
-<span class="n">hrs_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="n">min_resources</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;roc_auc&#39;</span><span class="p">,</span> 
+<span class="n">hrs_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="n">min_resources</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;roc_auc&#39;</span><span class="p">,</span>
                   <span class="n">random_state</span><span class="o">=</span><span class="mi">1707</span><span class="p">)</span>
 </pre></div>
 
@@ -15553,7 +15559,7 @@ features.</p>
 
 <div class="jp-OutputArea-child">
 
-    
+
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
 
@@ -15608,7 +15614,7 @@ Wall time: 7min 42s
 
 <div class="jp-OutputArea-child">
 
-    
+
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[35]:</div>
 
 
@@ -15681,7 +15687,7 @@ Wall time: 7min 42s
 
 <div class="jp-OutputArea-child">
 
-    
+
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[36]:</div>
 
 
@@ -15748,7 +15754,7 @@ Wall time: 7min 42s
 
 <div class="jp-OutputArea-child">
 
-    
+
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[37]:</div>
 
 
@@ -15804,7 +15810,7 @@ Name: mean_test_score, dtype: float64</pre>
 
 <div class="jp-OutputArea-child">
 
-    
+
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[38]:</div>
 
 
