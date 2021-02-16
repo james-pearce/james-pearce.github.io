@@ -30,9 +30,7 @@ The parameter `factor` sets the ‘halving’ or fraction rate. It determines th
 
 If we do _not_ specify a specific parameter, the default is to change the size of the sample at each halving iteration. In this way you can select a small sample across the grid space of hyperparameters that gets successively larger as you get closer to the optimum (at least theoretically).
 
-
-
-![Illustration of successive halving](/assets/Paper.February_2021.1%202.png)
+![Illustration of successive halving](/assets/successive-halving-example.png)  
 _**Example of successive halving with `factor = 2`**_
 
 ## Import the libraries we will need
