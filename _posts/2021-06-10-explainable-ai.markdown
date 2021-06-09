@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Why we do _and do not_ need explainable AI"
-date:   2021-06-10 09:00:00 +1100
+date:   2021-06-09 09:00:00 +1100
 categories: machine-learning XAI SHAP
 ---
 
