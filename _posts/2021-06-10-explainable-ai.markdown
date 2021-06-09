@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Why we do _and do not_ need explainable AI"
+title:  "Why we do—and don't—need explainable AI"
 date:   2021-06-09 09:00:00 +1100
 categories: machine-learning XAI SHAP
 ---
@@ -19,7 +19,7 @@ Our models contained a few, essential [features](https://en.wikipedia.org/wiki/F
 
 ## The new kid in town
 
-Then things changed. They got more sophisticated and more complex (possibly two words meaning the same thing.) We were given a choice of many different algorithms, such as [neural networks](https://scikit-learn.org/stable/modules/neural_networks_supervised.html), [random forests](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html), [gradient boosting machines](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html), [support vector machines](https://scikit-learn.org/stable/modules/svm.html) and [ensemble methods](https://scikit-learn.org/stable/modules/ensemble.html). We could now use hundreds — or even thousands — of features. In many cases our algorithms would select the best features and even pre-process them, meaning we no longer had to hand-craft them. We started to use a whole bunch of techniques that, when combined, would wring every drop of predictive power from our models and data.
+Then things changed. They got more sophisticated and more complex (possibly two words meaning the same thing). We were given a choice of many different algorithms, such as [neural networks](https://scikit-learn.org/stable/modules/neural_networks_supervised.html), [random forests](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html), [gradient boosting machines](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html), [support vector machines](https://scikit-learn.org/stable/modules/svm.html) and [ensemble methods](https://scikit-learn.org/stable/modules/ensemble.html). We could now use hundreds — or even thousands — of features. In many cases our algorithms would select the best features and even pre-process them, meaning we no longer had to hand-craft them. We started to use a whole bunch of techniques that, when combined, would wring every drop of predictive power from our models and data.
 
 The mantra was sometimes heard that as long as the model predicted well, why should we care about how the model arrived at its predictions?
 
@@ -38,18 +38,19 @@ But for now, enough _blah, blah, blah._ I will show you what I mean using the cl
 > **Spoiler alert**
 >
 > The ship hits an iceberg and sinks.
+---
 
 We want to build a model that will predict who would survive on the _Titanic_.[^1]
 
 [^1]: A prediction that will be really helpful if you want to book safe passage on _Titanic II_’s maiden voyage.
 
-![modelling](/Users/jamespearce/repos/titanic/images/modelling.svg)
+![modelling](/assets/modelling.svg)
 
 
 
-To build a model, I use a logistic regression in [R](http://cran.r-project.org) using the [`glm`](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/glm) package.
+To build a model, I use a logistic regression in [R](http://cran.r-project.org) using the [`glm`](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/glm) package. You can see my code [here](https://github.com/james-pearce/titanic-xai).
 
-We build our model (you can see my code [here](https://github.com/james-pearce/titanic-xai)). Comparing our predictions with what transpired, we get the following misclassification table (or _confusion matrix_).
+Comparing our predictions with what transpired, we get the following misclassification table (or _confusion matrix_).
 
 |                     |              Actual |              |
 | ------------------- | ------------------: | -----------: |
@@ -57,7 +58,7 @@ We build our model (you can see my code [here](https://github.com/james-pearce/t
 | **did not survive** |                 480 |           84 |
 | **survived**        |                  69 |          258 |
 
-If you add up the numbers, you can see this model gives an accuracy on the data set it was trained on of 82.%. This is the number of times we made a prediction that matched with what actually happened.
+If you add up the numbers, you can see this model gives an accuracy on the data set it was trained on of 82%. This is the number of times we made a prediction that matched with what actually happened.
 
 Great! Our model is somewhat accurate. But it does not help me in my quest for surviving when _Titanic II_ hits an iceberg. For that we have to look into the internals of the fitted model and do some simple maths.
 
@@ -298,7 +299,7 @@ The new hero of the day is a set of libraries called [SHAP](https://shap.readthe
 
 What SHAP does, in essence, is to run a series of test observations through a model’s prediction algorithm to see what happens. The reason its use is increasing so rapidly is that it outputs a series of additive outputs. (You know, like the regression models do.)
 
-And additive outputs are easy to interpret. You can add them up, take the mean (a statistician’s way of saying ‘average’); they bhave sensibly and intuitively.
+And additive outputs are easy to interpret. You can add them up, take the mean (a statistician’s way of saying ‘average’); they behave sensibly and intuitively.
 
 ### Back on board the _Titanic_
 
@@ -308,7 +309,7 @@ Instead of an analysis of deviance table, all the model fitting process gives me
 
 
 
-![feature-importance](https://github.com/james-pearce/titanic-xai/blob/main/python/images/feature-importance.png)
+![feature-importance](/assets/feature-importance.png)
 
 **_The most important features as shown by the GBM afterthought._**
 
@@ -316,7 +317,7 @@ Note that in what is produced above, we get no sense of the bounds of error or v
 
 To get some more information, we can turn to SHAP. It turns out that SHAP has a similar plot that also shows the individual points in the set of test observations we have used.
 
-![shap-summary-plot](https://github.com/james-pearce/titanic-xai/blob/main/python/images/shap-summary-plot.png)
+![shap-summary-plot](/assets/shap-summary-plot.png)
 
 This is a bit more informative. We can see perfect separation on the basis of `Sex`; that there are some bad values of `Pclass`; that being old was not a good thing.
 
@@ -324,13 +325,13 @@ This is a bit more informative. We can see perfect separation on the basis of `S
 
 As we did before, we can look at explaining individual predictions. SHAP can explain the prediction for the passenger most likely to survive.
 
-![best-passenger](https://github.com/james-pearce/titanic-xai/blob/main/python/images/best-passenger.png)
+![best-passenger](/assets/best-passenger.png)
 
 Now that chart is easy to understand (for a data scientist).
 
 Similarly for the unluckiest passenger.
 
-![worst-passenger](https://github.com/james-pearce/titanic-xai/blob/main/python/images/worst-passenger.png)
+![worst-passenger](/assets/worst-passenger.png)
 
 > **Note**: with a bit more mathematics, we could have represented the outputs of the logistic regression in exactly the same way.
 
@@ -352,7 +353,13 @@ First I ran the `XGBClassifier` model’s predictions through Kaggle. The result
 
 Next I tried the logistic regression. The result: 0.754 accuracy.
 
-Looks like we need to do more work to get the new, fancy machine learning techniques for little gain in this instance.
+Looks like we need to do more work to explain our new, fancy machine learning techniques but get little gain in this instance.
+
+The takeaway might be to think about your model development lifecycle:
+
+  1. build an interpretable model using classical, interpretable techniques;
+  2.  Once you are happy with this, use a modern machine learning technique to see if you get a significant gain in performance; and
+  3. If you do, consider whether you want to spend more time tweaking the interpretable model or explaining the machine learning model. Most times you won't.
 
 ---
 
