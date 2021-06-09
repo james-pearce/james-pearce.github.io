@@ -1,4 +1,505 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://www.3crownsconsulting.com.au/feed.xml" rel="self" type="application/atom+xml" /><link href="http://www.3crownsconsulting.com.au/" rel="alternate" type="text/html" /><updated>2021-06-09T20:13:32+00:00</updated><id>http://www.3crownsconsulting.com.au/feed.xml</id><title type="html">Data Science in the Wild</title><subtitle>Better techniques for getting more from your data.</subtitle><entry><title type="html">New features in scikit-learn part 1 — successive halving</title><link href="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html" rel="alternate" type="text/html" title="New features in scikit-learn part 1 — successive halving" /><published>2021-02-15T22:00:00+00:00</published><updated>2021-02-15T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html">&lt;h1 id=&quot;new-features-in-scikit-learn-024&quot;&gt;New features in scikit-learn 0.24&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://www.3crownsconsulting.com.au/feed.xml" rel="self" type="application/atom+xml" /><link href="http://www.3crownsconsulting.com.au/" rel="alternate" type="text/html" /><updated>2021-06-09T21:33:04+00:00</updated><id>http://www.3crownsconsulting.com.au/feed.xml</id><title type="html">Data Science in the Wild</title><subtitle>Better techniques for getting more from your data.</subtitle><entry><title type="html">Why we do _and do not_ need explainable AI</title><link href="http://www.3crownsconsulting.com.au/machine-learning/xai/shap/2021/06/08/explainable-ai.html" rel="alternate" type="text/html" title="Why we do _and do not_ need explainable AI" /><published>2021-06-08T22:00:00+00:00</published><updated>2021-06-08T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/machine-learning/xai/shap/2021/06/08/explainable-ai</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/machine-learning/xai/shap/2021/06/08/explainable-ai.html">&lt;p&gt;&lt;em&gt;Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;A black-box model is no longer good enough for your data scientists, your business or your customers.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;a-data-science-history-perspective&quot;&gt;A data science history perspective&lt;/h2&gt;
+
+&lt;p&gt;Back in the old days (really just a few years ago for some) building models for classification was simple. &lt;a href=&quot;https://en.wikipedia.org/wiki/Generalized_linear_model&quot;&gt;Generalised linear models&lt;/a&gt; (GLMs), and in particular, &lt;a href=&quot;https://en.wikipedia.org/wiki/Logistic_regression&quot;&gt;logistic regression&lt;/a&gt; models were the only algorithms we used.&lt;/p&gt;
+
+&lt;p&gt;And this is the &lt;em&gt;real&lt;/em&gt;, statistical version of logistic regression as you would find in the &lt;a href=&quot;https://www.python.org&quot;&gt;Python&lt;/a&gt; library &lt;a href=&quot;https://www.statsmodels.org/stable/glm.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;statsmodels&lt;/code&gt;&lt;/a&gt;, rather than the &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;scikit-learn&lt;/code&gt;&lt;/a&gt; version. In the statistical version, you get neat statistical parameter information including &lt;a href=&quot;https://www.sciencedirect.com/topics/engineering/regression-coefficient&quot;&gt;coefficient estimates&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Standard_error&quot;&gt;standard errors&lt;/a&gt; and estimates of fit such as &lt;a href=&quot;https://en.wikipedia.org/wiki/Deviance_(statistics)&quot;&gt;deviance&lt;/a&gt; or &lt;a href=&quot;https://online.stat.psu.edu/stat504/lesson/1/1.5&quot;&gt;log-likelihood&lt;/a&gt; estimates.&lt;/p&gt;
+
+&lt;p&gt;Our models contained a few, essential &lt;a href=&quot;https://en.wikipedia.org/wiki/Feature_%28machine_learning%29&quot;&gt;features&lt;/a&gt;. Those features we did use were handcrafted to be meaningful, stable and predictable.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-new-kid-in-town&quot;&gt;The new kid in town&lt;/h2&gt;
+
+&lt;p&gt;Then things changed. They got more sophisticated and more complex (possibly two words meaning the same thing.) We were given a choice of many different algorithms, such as &lt;a href=&quot;https://scikit-learn.org/stable/modules/neural_networks_supervised.html&quot;&gt;neural networks&lt;/a&gt;, &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html&quot;&gt;random forests&lt;/a&gt;, &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html&quot;&gt;gradient boosting machines&lt;/a&gt;, &lt;a href=&quot;https://scikit-learn.org/stable/modules/svm.html&quot;&gt;support vector machines&lt;/a&gt; and &lt;a href=&quot;https://scikit-learn.org/stable/modules/ensemble.html&quot;&gt;ensemble methods&lt;/a&gt;. We could now use hundreds — or even thousands — of features. In many cases our algorithms would select the best features and even pre-process them, meaning we no longer had to hand-craft them. We started to use a whole bunch of techniques that, when combined, would wring every drop of predictive power from our models and data.&lt;/p&gt;
+
+&lt;p&gt;The mantra was sometimes heard that as long as the model predicted well, why should we care about how the model arrived at its predictions?&lt;/p&gt;
+
+&lt;p&gt;And our debugging and diagnostic techniques evolved accordingly. They did not try to explain &lt;em&gt;why&lt;/em&gt; the model produced a prediction. Rather, &lt;a href=&quot;https://www.datasciencecentral.com/profiles/blogs/7-important-model-evaluation-error-metrics-everyone-should-know&quot;&gt;they quantified the extent to which the algorithm would generalise to a set of unseen data&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;constraints-can-be-good-for-creativity&quot;&gt;Constraints can be good for creativity&lt;/h2&gt;
+
+&lt;p&gt;Admittedly, in the scenario I presented in the old days, a lot of these constraints were thrust upon us. Our software did not support advanced algorithms. The lack of computational power made thousands of features impractical and time-consuming. Putting models into operational systems was hard; it often required hand-coding the algorithm into a mainframe (and yes, this is something I have done &lt;em&gt;in the last decade&lt;/em&gt;). Altogether this pushed the data scientist towards simpler models and implementations that were easier to test.&lt;/p&gt;
+
+&lt;p&gt;So with all these constraints in place, the models and algorithms developed with understanding and interpretability first and foremost. Contributing to why this needed to be so was what the models were used for: things like determining whether to grant an applicant a credit card, for example. It &lt;em&gt;just felt safer&lt;/em&gt; that humans could understand these models, regardless of the checks and balances in the process. We were risking hundreds and thousands of dollars if we got it wrong.&lt;/p&gt;
+
+&lt;p&gt;But for now, enough &lt;em&gt;blah, blah, blah.&lt;/em&gt; I will show you what I mean using the classic &lt;a href=&quot;https://www.kaggle.com/hesh97/titanicdataset-traincsv&quot;&gt;&lt;em&gt;Titanic&lt;/em&gt; data set&lt;/a&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Spoiler alert&lt;/strong&gt;&lt;/p&gt;
+
+  &lt;p&gt;The ship hits an iceberg and sinks.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;We want to build a model that will predict who would survive on the &lt;em&gt;Titanic&lt;/em&gt;.&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/Users/jamespearce/repos/titanic/images/modelling.svg&quot; alt=&quot;modelling&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To build a model, I use a logistic regression in &lt;a href=&quot;http://cran.r-project.org&quot;&gt;R&lt;/a&gt; using the &lt;a href=&quot;https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/glm&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;glm&lt;/code&gt;&lt;/a&gt; package.&lt;/p&gt;
+
+&lt;p&gt;We build our model (you can see my code &lt;a href=&quot;https://github.com/james-pearce/titanic-xai&quot;&gt;here&lt;/a&gt;). Comparing our predictions with what transpired, we get the following misclassification table (or &lt;em&gt;confusion matrix&lt;/em&gt;).&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Actual&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt; &lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;**Predicted**&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;**did not survive**&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;**survived**&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;**did not survive**&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;480&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;84&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;**survived**&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;69&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;258&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;If you add up the numbers, you can see this model gives an accuracy on the data set it was trained on of 82.%. This is the number of times we made a prediction that matched with what actually happened.&lt;/p&gt;
+
+&lt;p&gt;Great! Our model is somewhat accurate. But it does not help me in my quest for surviving when &lt;em&gt;Titanic II&lt;/em&gt; hits an iceberg. For that we have to look into the internals of the fitted model and do some simple maths.&lt;/p&gt;
+
+&lt;h3 id=&quot;analysis-of-deviance&quot;&gt;Analysis of deviance&lt;/h3&gt;
+
+&lt;p&gt;First, I look at the &lt;a href=&quot;https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/anova.glm&quot;&gt;analysis of deviance&lt;/a&gt; table. This tells me that all the variables except &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Fare&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Parch&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Embarked&lt;/code&gt; contribute to reducing the variation or error. It also tells me the bulk of predictive power lives in two variables: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sex&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Pclass&lt;/code&gt;.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Df&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Deviance&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Resid. Df&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;Resid. Dev&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;\$\Pr(&amp;gt;\chi^2)$&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;NULL&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;NA&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;NA&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;890&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1186.7&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;NA&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Pclass&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;103.5&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;888&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1083.1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Sex&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;256.2&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;887&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;826.9&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;age_band&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25.6&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;880&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;801.2&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;SibSp&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;16.7&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;878&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;784.6&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.00&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Parch&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;3.9&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;876&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;780.7&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.14&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Fare&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;4&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.4&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;872&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;779.2&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.84&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Cabin&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;7&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;15.7&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;865&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;763.5&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.03&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Embarked&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;5.0&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;863&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;758.5&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0.08&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;table-of-coefficients&quot;&gt;Table of coefficients&lt;/h3&gt;
+
+&lt;p&gt;Fitting a generalised linear model also gives us a table of coefficients. We can use this to see which values lead to greater or lesser chances of survival.&lt;/p&gt;
+
+&lt;div class=&quot;language-R highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;## Call:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## glm(formula = Survived ~ Pclass + Sex + age_band + SibSp + Parch +&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;##     Fare + Cabin + Embarked, family = binomial, data = titanic_df)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;##&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Deviance Residuals:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;##     Min       1Q   Median       3Q      Max&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## -2.5514  -0.6254  -0.3818   0.5720   2.5841&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;##&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Coefficients:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;##                         Estimate Std. Error z value Pr(&amp;gt;|z|)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## (Intercept)              0.10832    0.77843   0.139 0.889334&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Pclass1                  1.39381    0.52904   2.635 0.008424 **&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Pclass2                  1.05813    0.30546   3.464 0.000532 ***&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Sexfemale                2.73557    0.21185  12.913  &amp;lt; 2e-16 ***&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## age_band 2. 18 to 24    -1.36944    0.37236  -3.678 0.000235 ***&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## age_band 3. 25 to 34    -1.08831    0.35717  -3.047 0.002311 **&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## age_band 4. 35 to 44    -1.53207    0.39933  -3.837 0.000125 ***&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## age_band 5. 45 to 54    -2.01319    0.45186  -4.455 8.38e-06 ***&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## age_band 6. 55 to 64    -2.21546    0.60183  -3.681 0.000232 ***&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## age_band 7. 65 and over -3.35952    1.15066  -2.920 0.003504 **&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## age_band 8. Other       -1.37755    0.37881  -3.636 0.000276 ***&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## SibSp1                  -0.02670    0.25043  -0.107 0.915082&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## SibSp2+                 -1.30675    0.42860  -3.049 0.002297 **&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Parch1                   0.17985    0.31417   0.572 0.567005&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Parch2+                 -0.42993    0.35948  -1.196 0.231706&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Fare 2. ( 10,  20]       0.09089    0.32287   0.282 0.778322&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Fare 3. ( 20,  30]       0.06864    0.39740   0.173 0.862865&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Fare 4. ( 30,  40]       0.09779    0.49297   0.198 0.842758&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Fare 5. ( 40,    ]       0.34598    0.50561   0.684 0.493798&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## CabinB                   0.06157    0.71413   0.086 0.931292&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## CabinC                  -0.43524    0.66889  -0.651 0.515244&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## CabinD                   0.35476    0.75164   0.472 0.636945&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## CabinE                   0.88119    0.77044   1.144 0.252730&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## CabinF                   0.39872    1.01748   0.392 0.695157&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## CabinG/T                -1.94008    1.28924  -1.505 0.132368&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## CabinNot given          -0.84486    0.68418  -1.235 0.216887&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## EmbarkedQ                0.04961    0.40881   0.121 0.903410&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## EmbarkedS               -0.47637    0.25177  -1.892 0.058481 .&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## ---&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;##&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## (Dispersion parameter for binomial family taken to be 1)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;##&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;##     Null deviance: 1186.66  on 890  degrees of freedom&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Residual deviance:  758.52  on 863  degrees of freedom&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## AIC: 814.52&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;##&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;## Number of Fisher Scoring iterations: 5&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This tells us:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Pclass&lt;/code&gt; of 3 is associated with non-survival;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sex&lt;/code&gt; of ‘female’ is associated with survival;&lt;/li&gt;
+  &lt;li&gt;Children (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Age&lt;/code&gt; less than 18) are more likely to survive; and&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Cabin&lt;/code&gt; designations beginning with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt; are unlikely to survive,&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;as well as some other, less predictive, nuances.&lt;/p&gt;
+
+&lt;h3 id=&quot;explaining-predictions&quot;&gt;Explaining predictions&lt;/h3&gt;
+
+&lt;p&gt;Now we have managed to understand what is happening in our Titanic model. The next step is to &lt;em&gt;understand&lt;/em&gt; why the model makes individual predictions.&lt;/p&gt;
+
+&lt;p&gt;Let’s start by looking at the prediction of the passenger who was predicted to me &lt;em&gt;most&lt;/em&gt; likely to survive. Here are the details of that passenger, who has been predicted as 99.2% likely to survive.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Pclass&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Sex&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;age_band&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;SibSp&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Parch&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Fare&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Cabin&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Embarked&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;female&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;1. Under 18&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;5. ( 40, ]&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;B&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;C&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;All we need to do is a bit of mathematics to understand why this was predicted.&lt;/p&gt;
+
+&lt;div class=&quot;language-R highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;m&quot;&gt;0.10831603&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.39380902&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Pclass 1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2.73556786&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Sex female&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# age_band 1. Under 18&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# SibSp 0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.17985123&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Parch 1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.34597961&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Fare 40+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.06157172&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Cabin B&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Embarked C&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So, it is because she is female, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Pclass&lt;/code&gt; 1, under 18 and paid fare of over 40, along with some other details.&lt;/p&gt;
+
+&lt;p&gt;Now let’s look at the passenger predicted to be least likely to be a survivor. Here are the details of that passenger, predicted with a 1.0% chance of surviving.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Pclass&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Sex&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;age_band&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;SibSp&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Parch&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Fare&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Cabin&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Embarked&lt;fct&gt;&lt;/fct&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;3&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;male&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;7. 65 and over&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;0&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;1. ( 0, 10]&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Not given&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;S&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Again, we can see why this prediction was made with a bit of maths.&lt;/p&gt;
+
+&lt;div class=&quot;language-R highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;m&quot;&gt;0.10831603&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Pclass 3&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Sex male&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;-3.35951828&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# age_band 7. 65 and over&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# SibSp 0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Parch 0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# 1. (0, 10]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;-0.84485644&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Cabin Not given&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;-0.47636764&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Embarked S&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It is because&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;the passenger was male;&lt;/li&gt;
+  &lt;li&gt;he was aged 65 or over;&lt;/li&gt;
+  &lt;li&gt;he was in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Pclass&lt;/code&gt; 3; and&lt;/li&gt;
+  &lt;li&gt;paid a low fare,&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;as well as other attributes that contribute to the low prediction.&lt;/p&gt;
+
+&lt;h3 id=&quot;interpretable-and-explainable&quot;&gt;Interpretable and explainable&lt;/h3&gt;
+
+&lt;p&gt;It is interesting to note that the old-school approaches grounded in statistics gave us models that were &lt;em&gt;interpretable&lt;/em&gt; and produced predictions that were &lt;em&gt;explainable&lt;/em&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;modern-machine-learning&quot;&gt;Modern machine learning&lt;/h2&gt;
+
+&lt;p&gt;Move forward to today. Machine learning is moving to the mainstream and there are a plethora of tools we can use to build a predictive mode. We are no longer confined to ‘just’ the regression family (although there is a new, improved machine-learning version of regression, too).&lt;/p&gt;
+
+&lt;p&gt;The data scientist can choose from a dazzling array of algorithms. As an example, &lt;a href=&quot;https://lazypredict.readthedocs.io/en/latest/&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lazypredict&lt;/code&gt;&lt;/a&gt; will automatically fit &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LinearSVC&lt;/code&gt;&lt;/a&gt;, &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SGDClassifier&lt;/code&gt;&lt;/a&gt;, &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html?highlight=logisticregression#sklearn.linear_model.LogisticRegression&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LogisticRegression&lt;/code&gt;&lt;/a&gt;, &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html?highlight=randomforestclassifier#sklearn.ensemble.RandomForestClassifier&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RandomForestClassifier&lt;/code&gt;&lt;/a&gt;, &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html?highlight=gradientboostingclassifier#sklearn.ensemble.GradientBoostingClassifier&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GradientBoostingClassifier&lt;/code&gt;&lt;/a&gt;, &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html?highlight=gaussiannb#sklearn.naive_bayes.GaussianNB&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GaussianNB&lt;/code&gt;&lt;/a&gt; and another &lt;em&gt;twenty-five more!&lt;/em&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Model&lt;/span&gt;                          &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;Accuracy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;Balanced&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Accuracy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;ROC&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AUC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;F1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Score&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Taken&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-------------------------------|-----------&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|--------------------&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|----------&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|-----------&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|-------------&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LinearSVC&lt;/span&gt;                      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.989474&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.987544&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.987544&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.989462&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0150008&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SGDClassifier&lt;/span&gt;                  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.989474&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.987544&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.987544&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.989462&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0109992&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MLPClassifier&lt;/span&gt;                  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.985965&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.986904&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.986904&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.985994&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.426&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Perceptron&lt;/span&gt;                     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.985965&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.984797&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.984797&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.985965&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0120046&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogisticRegression&lt;/span&gt;             &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.985965&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.98269&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.98269&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.985934&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0200036&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LogisticRegressionCV&lt;/span&gt;           &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.985965&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.98269&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.98269&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.985934&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.262997&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SVC&lt;/span&gt;                            &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.982456&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.979942&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.979942&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.982437&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0140011&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CalibratedClassifierCV&lt;/span&gt;         &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.982456&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.975728&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.975728&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.982357&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0350015&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PassiveAggressiveClassifier&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.975439&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.974448&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.974448&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.975464&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0130005&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LabelPropagation&lt;/span&gt;               &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.975439&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.974448&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.974448&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.975464&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0429988&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LabelSpreading&lt;/span&gt;                 &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.975439&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.974448&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.974448&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.975464&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0310006&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RandomForestClassifier&lt;/span&gt;         &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.97193&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.969594&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.969594&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.97193&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.033&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GradientBoostingClassifier&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.97193&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.967486&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.967486&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.971869&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.166998&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;QuadraticDiscriminantAnalysis&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.964912&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.966206&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.966206&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.965052&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0119994&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HistGradientBoostingClassifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.968421&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.964739&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.964739&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.968387&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.682003&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RidgeClassifierCV&lt;/span&gt;              &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.97193&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.963272&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.963272&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.971736&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0130029&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RidgeClassifier&lt;/span&gt;                &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.968421&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.960525&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.960525&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.968242&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0119977&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AdaBoostClassifier&lt;/span&gt;             &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.961404&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.959245&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.959245&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.961444&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.204998&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ExtraTreesClassifier&lt;/span&gt;           &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.961404&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.957138&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.957138&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.961362&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0270066&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;KNeighborsClassifier&lt;/span&gt;           &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.961404&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.95503&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.95503&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.961276&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0560005&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BaggingClassifier&lt;/span&gt;              &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.947368&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.954577&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.954577&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.947882&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0559971&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BernoulliNB&lt;/span&gt;                    &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.950877&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.951003&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.951003&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.951072&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0169988&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LinearDiscriminantAnalysis&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.961404&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.950816&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.950816&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.961089&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0199995&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GaussianNB&lt;/span&gt;                     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.954386&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.949536&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.949536&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.954337&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0139935&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NuSVC&lt;/span&gt;                          &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.954386&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.943215&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.943215&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.954014&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.019989&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DecisionTreeClassifier&lt;/span&gt;         &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.936842&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.933693&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.933693&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.936971&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0170023&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NearestCentroid&lt;/span&gt;                &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.947368&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.933506&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.933506&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.946801&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0160074&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ExtraTreeClassifier&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.922807&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.912168&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.912168&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.922462&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0109999&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CheckingClassifier&lt;/span&gt;             &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.361404&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.191879&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0170043&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DummyClassifier&lt;/span&gt;                &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.512281&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;mf&quot;&gt;0.489598&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;  &lt;span class=&quot;mf&quot;&gt;0.489598&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;0.518924&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mf&quot;&gt;0.0119965&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;A list of classifiers from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lazypredict&lt;/code&gt;’s documentation.&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;What a long way we have come …&lt;/p&gt;
+
+&lt;h3 id=&quot;-or-have-we&quot;&gt;… Or have we?&lt;/h3&gt;
+
+&lt;p&gt;My original analytical training was as a statistician. This means I have a bias, so please keep that in mind.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.SDJJ0y7zXX5HVwuZXBIaQwHaDf%26pid%3DApi&amp;amp;f=1&quot; alt=&quot;A statistician quotation&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;With the classical, statistical techniques the focus was on &lt;em&gt;inference&lt;/em&gt;; the new machine learning techniques focus on &lt;em&gt;prediction&lt;/em&gt;. For a while there was a sentiment—and indeed, a junior aspiring data scientist said this to me—that so long as a model predicts well, it does not matter what happens inside the algorithm’s black box.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;The end justifies the means.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Of course, now we know that it &lt;em&gt;does&lt;/em&gt; matter what happens; we do need to be able to understand &lt;em&gt;what&lt;/em&gt; we are doing.&lt;/p&gt;
+
+&lt;p&gt;First, we need to be sure that an algorithm predicts well. If we do not understand the algorithm, how can we know this?&lt;/p&gt;
+
+&lt;p&gt;We can look at the predictions made against our validation data set. (I am sure some business stakeholders relying on models performing well would be horrified to learn they might have been tested only against a couple of hundred records to make sure they behaved as expected.) But this will not tell us if we have made &lt;a href=&quot;https://www.reuters.com/article/us-amazon-com-jobs-automation-insight/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-idUSKCN1MK08G&quot;&gt;a catastrophic error in the selection of our data&lt;/a&gt;. It will not tell us if there are subsegments of our customer base for which the predictions do not work well. When the algorithm is a ‘black box’ which simply takes inputs and returns outputs with no clue as to its inner workings, the only debugging possible is to run many cases through and make sure the prediction is close to the truth.&lt;/p&gt;
+
+&lt;p&gt;Second, we need to be able to explain &lt;em&gt;why&lt;/em&gt; we made individual predictions. I am sure you would agree that it is not satistying to explain a refusal to accept a loan application on the grounds of ‘computer says no’. Neither the customer nor the customer service agent would have a reason to trust the algorithm. They are left to guessing why the application was not accepted.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.LHL6AyEugKKtdom-rCQTcQHaEV%26pid%3DApi&amp;amp;f=1&quot; alt=&quot;Computer says no&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;But that is what we are asking people to do when we say ’trust the machine’. We are asking humans in a real process making operational decisions to use the predictions from a machine learning algorithm. Surely it would be in the interest of everyone invested in the model’s success to ensure the users trust and understand why the predictions are model. They need to get reasons of why this customer has been selected to receive this discount, or why a particular machine has been selected for maintenance. If they cannot trust it, adoption rates and compliance rates will remain low.&lt;/p&gt;
+
+&lt;p&gt;Third, there is an increasing focus on models being well governed and responsible. Initiatives like &lt;a href=&quot;https://www.oreilly.com/radar/how-will-the-gdpr-impact-machine-learning/&quot;&gt;GDPR&lt;/a&gt; prescribe how machine learning is governed, how users’ consent is managed and how interpretable a model’s predictions are. In parallel, there is increasing focus on &lt;a href=&quot;https://consult.industry.gov.au/strategic-policy/artificial-intelligence-ethics-framework/supporting_documents/ArtificialIntelligenceethicsframeworkdiscussionpaper.pdf&quot;&gt;ethical AI&lt;/a&gt; and &lt;a href=&quot;https://www.microsoft.com/en-us/ai/responsible-ai?activetab=pivot1:primaryr6&quot;&gt;responsible AI&lt;/a&gt;, which include a set of principles to ensure machine learning models used by organisations are&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;fair;&lt;/li&gt;
+  &lt;li&gt;reliable and safe;&lt;/li&gt;
+  &lt;li&gt;inclusive;&lt;/li&gt;
+  &lt;li&gt;transparent;&lt;/li&gt;
+  &lt;li&gt;private and secure; and&lt;/li&gt;
+  &lt;li&gt;have clear accountability.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;what-have-we-lost&quot;&gt;What have we lost?&lt;/h3&gt;
+
+&lt;p&gt;With the classical statistical techniques of yore, we had measure of uncretainty around the parameters of the algorithm. We could tell where it was accurate and where it was less so. We could calculate the predictions with a modest amount of matrix mathematics.&lt;/p&gt;
+
+&lt;p&gt;The new techniques kind of forgot about these things. Or they added them as an afterthought.&lt;/p&gt;
+
+&lt;p&gt;Now, though, there is something of a renaissance brewing under the name of XAI—explainable AI. XAI typically refers to a suite of tools and technique that let us &lt;em&gt;interpret&lt;/em&gt; fitted models and &lt;em&gt;explain&lt;/em&gt; predictions of almost any model.&lt;/p&gt;
+
+&lt;h3 id=&quot;shap&quot;&gt;SHAP&lt;/h3&gt;
+
+&lt;p&gt;The new hero of the day is a set of libraries called &lt;a href=&quot;https://shap.readthedocs.io/en/latest/&quot;&gt;SHAP&lt;/a&gt;—&lt;strong&gt;SH&lt;/strong&gt;apley &lt;strong&gt;a&lt;/strong&gt;dditive &lt;strong&gt;p&lt;/strong&gt;redictions.&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;What SHAP does, in essence, is to run a series of test observations through a model’s prediction algorithm to see what happens. The reason its use is increasing so rapidly is that it outputs a series of additive outputs. (You know, like the regression models do.)&lt;/p&gt;
+
+&lt;p&gt;And additive outputs are easy to interpret. You can add them up, take the mean (a statistician’s way of saying ‘average’); they bhave sensibly and intuitively.&lt;/p&gt;
+
+&lt;h3 id=&quot;back-on-board-the-titanic&quot;&gt;Back on board the &lt;em&gt;Titanic&lt;/em&gt;&lt;/h3&gt;
+
+&lt;p&gt;So to show you how we can apply SHAP to the same data set as before, I used the Python &lt;a href=&quot;https://xgboost.readthedocs.io/en/latest/python/python_api.html#module-xgboost.sklearn&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;XGBClassifier&lt;/code&gt;&lt;/a&gt; against the data. I used the default parameters and the same feature transformations I used with the logistic regression model.&lt;/p&gt;
+
+&lt;p&gt;Instead of an analysis of deviance table, all the model fitting process gives me is a series of sequential trees that reduce the variation of error at each iteration. &lt;a href=&quot;https://en.wikipedia.org/wiki/Gradient_boosting&quot;&gt;This is what GBMs do.&lt;/a&gt; I can find out which features contribute to the model using one of the ‘afterthought’ techniques included with the algorithm.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/james-pearce/titanic-xai/blob/main/python/images/feature-importance.png&quot; alt=&quot;feature-importance&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;The most important features as shown by the GBM afterthought.&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Note that in what is produced above, we get no sense of the bounds of error or variation.&lt;/p&gt;
+
+&lt;p&gt;To get some more information, we can turn to SHAP. It turns out that SHAP has a similar plot that also shows the individual points in the set of test observations we have used.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/james-pearce/titanic-xai/blob/main/python/images/shap-summary-plot.png&quot; alt=&quot;shap-summary-plot&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is a bit more informative. We can see perfect separation on the basis of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sex&lt;/code&gt;; that there are some bad values of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Pclass&lt;/code&gt;; that being old was not a good thing.&lt;/p&gt;
+
+&lt;h3 id=&quot;explaining-predictions-1&quot;&gt;Explaining predictions&lt;/h3&gt;
+
+&lt;p&gt;As we did before, we can look at explaining individual predictions. SHAP can explain the prediction for the passenger most likely to survive.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/james-pearce/titanic-xai/blob/main/python/images/best-passenger.png&quot; alt=&quot;best-passenger&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now that chart is easy to understand (for a data scientist).&lt;/p&gt;
+
+&lt;p&gt;Similarly for the unluckiest passenger.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/james-pearce/titanic-xai/blob/main/python/images/worst-passenger.png&quot; alt=&quot;worst-passenger&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: with a bit more mathematics, we could have represented the outputs of the logistic regression in exactly the same way.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;comparing-the-old-and-the-new&quot;&gt;Comparing the old and the new&lt;/h2&gt;
+
+&lt;p&gt;So now you have seen what we used to do and what we can do now with SHAP.&lt;/p&gt;
+
+&lt;p&gt;“So,” I hear you saying, “you are building a second, additive and interpretable model to explain a model that used a technique that is inherently difficult to explain.”&lt;/p&gt;
+
+&lt;p&gt;Yes, that is right—now we have two models. One to predict, and one to explain the predictions and interpret the model.&lt;/p&gt;
+
+&lt;p&gt;“Wow,” you must be thinking, “these new-fangled machine learning techniques must be &lt;em&gt;really something&lt;/em&gt; for you to add the complexity of having two models instead of one.”&lt;/p&gt;
+
+&lt;h2 id=&quot;back-to-you-kaggle&quot;&gt;Back to you, Kaggle&lt;/h2&gt;
+
+&lt;p&gt;To show you how far we have come, I tested these models on Kaggle (and there are many, many models on Kaggle that predict better on this data set). Kaggle provides a test set of data that contains all the variables of the training data set, but does not include the information on whether an individual survived or not. Kaggle uses this unseen information to calculate a performance score. It uses a measure of accuracy, and higher means better.&lt;/p&gt;
+
+&lt;p&gt;First I ran the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;XGBClassifier&lt;/code&gt; model’s predictions through Kaggle. The result: 0.734 accuracy.&lt;/p&gt;
+
+&lt;p&gt;Next I tried the logistic regression. The result: 0.754 accuracy.&lt;/p&gt;
+
+&lt;p&gt;Looks like we need to do more work to get the new, fancy machine learning techniques for little gain in this instance.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Increasingly data scientists and the systems that use the models produced by data scientists are under pressure to be well-governed, interpretable and well-understood. Their predictions need to be, well, predictable.&lt;/p&gt;
+
+&lt;p&gt;The SHAP library is very useful and gives us insight into models that would otherwise have been obscured from our view. But for some use cases, you are better off using the classical techniques and understanding your model as you develop it. The alternative road can be a lot of complexity and effort for less understanding and no gain in prediction accuracy.&lt;/p&gt;
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;A prediction that will be really helpful if you want to book safe passage on &lt;em&gt;Titanic II&lt;/em&gt;’s maiden voyage. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;An in-depth treatment of this can be found in &lt;a href=&quot;https://christophm.github.io/interpretable-ml-book/&quot;&gt;Christoph Molnar’s e-Book &lt;em&gt;Interpretable Machine Learning&lt;/em&gt;&lt;/a&gt;. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name></name></author><category term="machine-learning" /><category term="XAI" /><category term="SHAP" /><summary type="html">Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think.</summary></entry><entry><title type="html">New features in scikit-learn part 1 — successive halving</title><link href="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html" rel="alternate" type="text/html" title="New features in scikit-learn part 1 — successive halving" /><published>2021-02-15T22:00:00+00:00</published><updated>2021-02-15T22:00:00+00:00</updated><id>http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example</id><content type="html" xml:base="http://www.3crownsconsulting.com.au/machine-learning/sklearn/2021/02/15/scikit-learn-successive-halving-example.html">&lt;h1 id=&quot;new-features-in-scikit-learn-024&quot;&gt;New features in scikit-learn 0.24&lt;/h1&gt;
 
 &lt;p&gt;Welcome to a short series of posts where I look at some of the new features introduced in &lt;a href=&quot;https://scikit-learn.org/stable/&quot;&gt;scikit-learn&lt;/a&gt; version 0.24, a newish release of the popular Python machine learning library.&lt;/p&gt;
 

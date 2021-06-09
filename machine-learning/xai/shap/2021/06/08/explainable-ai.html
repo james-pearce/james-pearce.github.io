@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Why we do and do not need explainable AI | Data Science in the Wild</title>
+<meta name="generator" content="Jekyll v3.9.0">
+<meta property="og:title" content="Why we do and do not need explainable AI">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think.">
+<meta property="og:description" content="Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think.">
+<link rel="canonical" href="http://www.3crownsconsulting.com.au/machine-learning/xai/shap/2021/06/08/explainable-ai.html">
+<meta property="og:url" content="http://www.3crownsconsulting.com.au/machine-learning/xai/shap/2021/06/08/explainable-ai.html">
+<meta property="og:site_name" content="Data Science in the Wild">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2021-06-08T22:00:00+00:00">
+<script type="application/ld+json">
+{"description":"Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think.","headline":"Why we do and do not need explainable AI","dateModified":"2021-06-08T22:00:00+00:00","datePublished":"2021-06-08T22:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.3crownsconsulting.com.au/machine-learning/xai/shap/2021/06/08/explainable-ai.html"},"url":"http://www.3crownsconsulting.com.au/machine-learning/xai/shap/2021/06/08/explainable-ai.html","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css">
+<link type="application/atom+xml" rel="alternate" href="http://www.3crownsconsulting.com.au/feed.xml" title="Data Science in the Wild">
+<script>MathJax={"tex":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"svg":{"fontCache":"global"}}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<header class="site-header" role="banner">
+
+  <div class="wrapper">
+<a class="site-title" rel="author" href="/">Data Science in the Wild</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger">
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewbox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav>
+</div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Why we do _and do not_ need explainable AI</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-06-08T22:00:00+00:00" itemprop="datePublished">Jun 8, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><em>Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think.</em></p>
+
+<p><strong>A black-box model is no longer good enough for your data scientists, your business or your customers.</strong></p>
+
+<h2 id="a-data-science-history-perspective">A data science history perspective</h2>
+
+<p>Back in the old days (really just a few years ago for some) building models for classification was simple. <a href="https://en.wikipedia.org/wiki/Generalized_linear_model">Generalised linear models</a> (GLMs), and in particular, <a href="https://en.wikipedia.org/wiki/Logistic_regression">logistic regression</a> models were the only algorithms we used.</p>
+
+<p>And this is the <em>real</em>, statistical version of logistic regression as you would find in the <a href="https://www.python.org">Python</a> library <a href="https://www.statsmodels.org/stable/glm.html"><code class="language-plaintext highlighter-rouge">statsmodels</code></a>, rather than the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html"><code class="language-plaintext highlighter-rouge">scikit-learn</code></a> version. In the statistical version, you get neat statistical parameter information including <a href="https://www.sciencedirect.com/topics/engineering/regression-coefficient">coefficient estimates</a>, <a href="https://en.wikipedia.org/wiki/Standard_error">standard errors</a> and estimates of fit such as <a href="https://en.wikipedia.org/wiki/Deviance_(statistics)">deviance</a> or <a href="https://online.stat.psu.edu/stat504/lesson/1/1.5">log-likelihood</a> estimates.</p>
+
+<p>Our models contained a few, essential <a href="https://en.wikipedia.org/wiki/Feature_%28machine_learning%29">features</a>. Those features we did use were handcrafted to be meaningful, stable and predictable.</p>
+
+<h2 id="the-new-kid-in-town">The new kid in town</h2>
+
+<p>Then things changed. They got more sophisticated and more complex (possibly two words meaning the same thing.) We were given a choice of many different algorithms, such as <a href="https://scikit-learn.org/stable/modules/neural_networks_supervised.html">neural networks</a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">random forests</a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html">gradient boosting machines</a>, <a href="https://scikit-learn.org/stable/modules/svm.html">support vector machines</a> and <a href="https://scikit-learn.org/stable/modules/ensemble.html">ensemble methods</a>. We could now use hundreds — or even thousands — of features. In many cases our algorithms would select the best features and even pre-process them, meaning we no longer had to hand-craft them. We started to use a whole bunch of techniques that, when combined, would wring every drop of predictive power from our models and data.</p>
+
+<p>The mantra was sometimes heard that as long as the model predicted well, why should we care about how the model arrived at its predictions?</p>
+
+<p>And our debugging and diagnostic techniques evolved accordingly. They did not try to explain <em>why</em> the model produced a prediction. Rather, <a href="https://www.datasciencecentral.com/profiles/blogs/7-important-model-evaluation-error-metrics-everyone-should-know">they quantified the extent to which the algorithm would generalise to a set of unseen data</a>.</p>
+
+<h2 id="constraints-can-be-good-for-creativity">Constraints can be good for creativity</h2>
+
+<p>Admittedly, in the scenario I presented in the old days, a lot of these constraints were thrust upon us. Our software did not support advanced algorithms. The lack of computational power made thousands of features impractical and time-consuming. Putting models into operational systems was hard; it often required hand-coding the algorithm into a mainframe (and yes, this is something I have done <em>in the last decade</em>). Altogether this pushed the data scientist towards simpler models and implementations that were easier to test.</p>
+
+<p>So with all these constraints in place, the models and algorithms developed with understanding and interpretability first and foremost. Contributing to why this needed to be so was what the models were used for: things like determining whether to grant an applicant a credit card, for example. It <em>just felt safer</em> that humans could understand these models, regardless of the checks and balances in the process. We were risking hundreds and thousands of dollars if we got it wrong.</p>
+
+<p>But for now, enough <em>blah, blah, blah.</em> I will show you what I mean using the classic <a href="https://www.kaggle.com/hesh97/titanicdataset-traincsv"><em>Titanic</em> data set</a>.</p>
+
+<hr>
+
+<blockquote>
+  <p><strong>Spoiler alert</strong></p>
+
+  <p>The ship hits an iceberg and sinks.</p>
+</blockquote>
+
+<p>We want to build a model that will predict who would survive on the <em>Titanic</em>.<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup></p>
+
+<p><img src="/Users/jamespearce/repos/titanic/images/modelling.svg" alt="modelling"></p>
+
+<p>To build a model, I use a logistic regression in <a href="http://cran.r-project.org">R</a> using the <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/glm"><code class="language-plaintext highlighter-rouge">glm</code></a> package.</p>
+
+<p>We build our model (you can see my code <a href="https://github.com/james-pearce/titanic-xai">here</a>). Comparing our predictions with what transpired, we get the following misclassification table (or <em>confusion matrix</em>).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th style="text-align: right">Actual</th>
+      <th style="text-align: right"> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Predicted</strong></td>
+      <td style="text-align: right"><strong>did not survive</strong></td>
+      <td style="text-align: right"><strong>survived</strong></td>
+    </tr>
+    <tr>
+      <td><strong>did not survive</strong></td>
+      <td style="text-align: right">480</td>
+      <td style="text-align: right">84</td>
+    </tr>
+    <tr>
+      <td><strong>survived</strong></td>
+      <td style="text-align: right">69</td>
+      <td style="text-align: right">258</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If you add up the numbers, you can see this model gives an accuracy on the data set it was trained on of 82.%. This is the number of times we made a prediction that matched with what actually happened.</p>
+
+<p>Great! Our model is somewhat accurate. But it does not help me in my quest for surviving when <em>Titanic II</em> hits an iceberg. For that we have to look into the internals of the fitted model and do some simple maths.</p>
+
+<h3 id="analysis-of-deviance">Analysis of deviance</h3>
+
+<p>First, I look at the <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/anova.glm">analysis of deviance</a> table. This tells me that all the variables except <code class="language-plaintext highlighter-rouge">Fare</code>, <code class="language-plaintext highlighter-rouge">Parch</code> and <code class="language-plaintext highlighter-rouge">Embarked</code> contribute to reducing the variation or error. It also tells me the bulk of predictive power lives in two variables: <code class="language-plaintext highlighter-rouge">Sex</code> and <code class="language-plaintext highlighter-rouge">Pclass</code>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th style="text-align: right">Df</th>
+      <th style="text-align: right">Deviance</th>
+      <th style="text-align: right">Resid. Df</th>
+      <th style="text-align: right">Resid. Dev</th>
+      <th style="text-align: right">$\Pr(&gt;\chi^2)$</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>NULL</td>
+      <td style="text-align: right">NA</td>
+      <td style="text-align: right">NA</td>
+      <td style="text-align: right">890</td>
+      <td style="text-align: right">1186.7</td>
+      <td style="text-align: right">NA</td>
+    </tr>
+    <tr>
+      <td>Pclass</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">103.5</td>
+      <td style="text-align: right">888</td>
+      <td style="text-align: right">1083.1</td>
+      <td style="text-align: right">0.00</td>
+    </tr>
+    <tr>
+      <td>Sex</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">256.2</td>
+      <td style="text-align: right">887</td>
+      <td style="text-align: right">826.9</td>
+      <td style="text-align: right">0.00</td>
+    </tr>
+    <tr>
+      <td>age_band</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">25.6</td>
+      <td style="text-align: right">880</td>
+      <td style="text-align: right">801.2</td>
+      <td style="text-align: right">0.00</td>
+    </tr>
+    <tr>
+      <td>SibSp</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">16.7</td>
+      <td style="text-align: right">878</td>
+      <td style="text-align: right">784.6</td>
+      <td style="text-align: right">0.00</td>
+    </tr>
+    <tr>
+      <td>Parch</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">3.9</td>
+      <td style="text-align: right">876</td>
+      <td style="text-align: right">780.7</td>
+      <td style="text-align: right">0.14</td>
+    </tr>
+    <tr>
+      <td>Fare</td>
+      <td style="text-align: right">4</td>
+      <td style="text-align: right">1.4</td>
+      <td style="text-align: right">872</td>
+      <td style="text-align: right">779.2</td>
+      <td style="text-align: right">0.84</td>
+    </tr>
+    <tr>
+      <td>Cabin</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">15.7</td>
+      <td style="text-align: right">865</td>
+      <td style="text-align: right">763.5</td>
+      <td style="text-align: right">0.03</td>
+    </tr>
+    <tr>
+      <td>Embarked</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">5.0</td>
+      <td style="text-align: right">863</td>
+      <td style="text-align: right">758.5</td>
+      <td style="text-align: right">0.08</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="table-of-coefficients">Table of coefficients</h3>
+
+<p>Fitting a generalised linear model also gives us a table of coefficients. We can use this to see which values lead to greater or lesser chances of survival.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## Call:</span><span class="w">
+</span><span class="c1">## glm(formula = Survived ~ Pclass + Sex + age_band + SibSp + Parch +</span><span class="w">
+</span><span class="c1">##     Fare + Cabin + Embarked, family = binomial, data = titanic_df)</span><span class="w">
+</span><span class="c1">##</span><span class="w">
+</span><span class="c1">## Deviance Residuals:</span><span class="w">
+</span><span class="c1">##     Min       1Q   Median       3Q      Max</span><span class="w">
+</span><span class="c1">## -2.5514  -0.6254  -0.3818   0.5720   2.5841</span><span class="w">
+</span><span class="c1">##</span><span class="w">
+</span><span class="c1">## Coefficients:</span><span class="w">
+</span><span class="c1">##                         Estimate Std. Error z value Pr(&gt;|z|)</span><span class="w">
+</span><span class="c1">## (Intercept)              0.10832    0.77843   0.139 0.889334</span><span class="w">
+</span><span class="c1">## Pclass1                  1.39381    0.52904   2.635 0.008424 **</span><span class="w">
+</span><span class="c1">## Pclass2                  1.05813    0.30546   3.464 0.000532 ***</span><span class="w">
+</span><span class="c1">## Sexfemale                2.73557    0.21185  12.913  &lt; 2e-16 ***</span><span class="w">
+</span><span class="c1">## age_band 2. 18 to 24    -1.36944    0.37236  -3.678 0.000235 ***</span><span class="w">
+</span><span class="c1">## age_band 3. 25 to 34    -1.08831    0.35717  -3.047 0.002311 **</span><span class="w">
+</span><span class="c1">## age_band 4. 35 to 44    -1.53207    0.39933  -3.837 0.000125 ***</span><span class="w">
+</span><span class="c1">## age_band 5. 45 to 54    -2.01319    0.45186  -4.455 8.38e-06 ***</span><span class="w">
+</span><span class="c1">## age_band 6. 55 to 64    -2.21546    0.60183  -3.681 0.000232 ***</span><span class="w">
+</span><span class="c1">## age_band 7. 65 and over -3.35952    1.15066  -2.920 0.003504 **</span><span class="w">
+</span><span class="c1">## age_band 8. Other       -1.37755    0.37881  -3.636 0.000276 ***</span><span class="w">
+</span><span class="c1">## SibSp1                  -0.02670    0.25043  -0.107 0.915082</span><span class="w">
+</span><span class="c1">## SibSp2+                 -1.30675    0.42860  -3.049 0.002297 **</span><span class="w">
+</span><span class="c1">## Parch1                   0.17985    0.31417   0.572 0.567005</span><span class="w">
+</span><span class="c1">## Parch2+                 -0.42993    0.35948  -1.196 0.231706</span><span class="w">
+</span><span class="c1">## Fare 2. ( 10,  20]       0.09089    0.32287   0.282 0.778322</span><span class="w">
+</span><span class="c1">## Fare 3. ( 20,  30]       0.06864    0.39740   0.173 0.862865</span><span class="w">
+</span><span class="c1">## Fare 4. ( 30,  40]       0.09779    0.49297   0.198 0.842758</span><span class="w">
+</span><span class="c1">## Fare 5. ( 40,    ]       0.34598    0.50561   0.684 0.493798</span><span class="w">
+</span><span class="c1">## CabinB                   0.06157    0.71413   0.086 0.931292</span><span class="w">
+</span><span class="c1">## CabinC                  -0.43524    0.66889  -0.651 0.515244</span><span class="w">
+</span><span class="c1">## CabinD                   0.35476    0.75164   0.472 0.636945</span><span class="w">
+</span><span class="c1">## CabinE                   0.88119    0.77044   1.144 0.252730</span><span class="w">
+</span><span class="c1">## CabinF                   0.39872    1.01748   0.392 0.695157</span><span class="w">
+</span><span class="c1">## CabinG/T                -1.94008    1.28924  -1.505 0.132368</span><span class="w">
+</span><span class="c1">## CabinNot given          -0.84486    0.68418  -1.235 0.216887</span><span class="w">
+</span><span class="c1">## EmbarkedQ                0.04961    0.40881   0.121 0.903410</span><span class="w">
+</span><span class="c1">## EmbarkedS               -0.47637    0.25177  -1.892 0.058481 .</span><span class="w">
+</span><span class="c1">## ---</span><span class="w">
+</span><span class="c1">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span><span class="w">
+</span><span class="c1">##</span><span class="w">
+</span><span class="c1">## (Dispersion parameter for binomial family taken to be 1)</span><span class="w">
+</span><span class="c1">##</span><span class="w">
+</span><span class="c1">##     Null deviance: 1186.66  on 890  degrees of freedom</span><span class="w">
+</span><span class="c1">## Residual deviance:  758.52  on 863  degrees of freedom</span><span class="w">
+</span><span class="c1">## AIC: 814.52</span><span class="w">
+</span><span class="c1">##</span><span class="w">
+</span><span class="c1">## Number of Fisher Scoring iterations: 5</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This tells us:</p>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">Pclass</code> of 3 is associated with non-survival;</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">Sex</code> of ‘female’ is associated with survival;</li>
+  <li>Children (<code class="language-plaintext highlighter-rouge">Age</code> less than 18) are more likely to survive; and</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">Cabin</code> designations beginning with <code class="language-plaintext highlighter-rouge">G</code> are unlikely to survive,</li>
+</ul>
+
+<p>as well as some other, less predictive, nuances.</p>
+
+<h3 id="explaining-predictions">Explaining predictions</h3>
+
+<p>Now we have managed to understand what is happening in our Titanic model. The next step is to <em>understand</em> why the model makes individual predictions.</p>
+
+<p>Let’s start by looking at the prediction of the passenger who was predicted to me <em>most</em> likely to survive. Here are the details of that passenger, who has been predicted as 99.2% likely to survive.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Pclass<fct></fct>
+</th>
+      <th style="text-align: left">Sex<fct></fct>
+</th>
+      <th style="text-align: left">age_band<fct></fct>
+</th>
+      <th style="text-align: left">SibSp<fct></fct>
+</th>
+      <th style="text-align: left">Parch<fct></fct>
+</th>
+      <th style="text-align: left">Fare<fct></fct>
+</th>
+      <th style="text-align: left">Cabin<fct></fct>
+</th>
+      <th style="text-align: left">Embarked<fct></fct>
+</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">1</td>
+      <td style="text-align: left">female</td>
+      <td style="text-align: left">
+<ol>
+  <li>Under 18</li>
+</ol>
+</td>
+      <td style="text-align: left">0</td>
+      <td style="text-align: left">1</td>
+      <td style="text-align: left">
+<ol>
+  <li>( 40, ]</li>
+</ol>
+</td>
+      <td style="text-align: left">B</td>
+      <td style="text-align: left">C</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>All we need to do is a bit of mathematics to understand why this was predicted.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="m">0.10831603</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="m">1.39380902</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># Pclass 1</span><span class="w">
+  </span><span class="m">2.73556786</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># Sex female</span><span class="w">
+  </span><span class="m">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># age_band 1. Under 18</span><span class="w">
+  </span><span class="m">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># SibSp 0</span><span class="w">
+  </span><span class="m">0.17985123</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># Parch 1</span><span class="w">
+  </span><span class="m">0.34597961</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># Fare 40+</span><span class="w">
+  </span><span class="m">0.06157172</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># Cabin B</span><span class="w">
+  </span><span class="m">0</span><span class="w">  </span><span class="c1"># Embarked C</span><span class="w">
+</span></code></pre></div></div>
+
+<p>So, it is because she is female, <code class="language-plaintext highlighter-rouge">Pclass</code> 1, under 18 and paid fare of over 40, along with some other details.</p>
+
+<p>Now let’s look at the passenger predicted to be least likely to be a survivor. Here are the details of that passenger, predicted with a 1.0% chance of surviving.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Pclass<fct></fct>
+</th>
+      <th style="text-align: left">Sex<fct></fct>
+</th>
+      <th style="text-align: left">age_band<fct></fct>
+</th>
+      <th style="text-align: left">SibSp<fct></fct>
+</th>
+      <th style="text-align: left">Parch<fct></fct>
+</th>
+      <th style="text-align: left">Fare<fct></fct>
+</th>
+      <th style="text-align: left">Cabin<fct></fct>
+</th>
+      <th style="text-align: left">Embarked<fct></fct>
+</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">3</td>
+      <td style="text-align: left">male</td>
+      <td style="text-align: left">
+<ol>
+  <li>65 and over</li>
+</ol>
+</td>
+      <td style="text-align: left">0</td>
+      <td style="text-align: left">0</td>
+      <td style="text-align: left">
+<ol>
+  <li>( 0, 10]</li>
+</ol>
+</td>
+      <td style="text-align: left">Not given</td>
+      <td style="text-align: left">S</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Again, we can see why this prediction was made with a bit of maths.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="m">0.10831603</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="m">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># Pclass 3</span><span class="w">
+  </span><span class="m">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># Sex male</span><span class="w">
+  </span><span class="m">-3.35951828</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># age_band 7. 65 and over</span><span class="w">
+  </span><span class="m">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># SibSp 0</span><span class="w">
+  </span><span class="m">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># Parch 0</span><span class="w">
+  </span><span class="m">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># 1. (0, 10]</span><span class="w">
+  </span><span class="m">-0.84485644</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># Cabin Not given</span><span class="w">
+  </span><span class="m">-0.47636764</span><span class="w">  </span><span class="c1"># Embarked S</span><span class="w">
+</span></code></pre></div></div>
+
+<p>It is because</p>
+
+<ul>
+  <li>the passenger was male;</li>
+  <li>he was aged 65 or over;</li>
+  <li>he was in <code class="language-plaintext highlighter-rouge">Pclass</code> 3; and</li>
+  <li>paid a low fare,</li>
+</ul>
+
+<p>as well as other attributes that contribute to the low prediction.</p>
+
+<h3 id="interpretable-and-explainable">Interpretable and explainable</h3>
+
+<p>It is interesting to note that the old-school approaches grounded in statistics gave us models that were <em>interpretable</em> and produced predictions that were <em>explainable</em>.</p>
+
+<hr>
+
+<h2 id="modern-machine-learning">Modern machine learning</h2>
+
+<p>Move forward to today. Machine learning is moving to the mainstream and there are a plethora of tools we can use to build a predictive mode. We are no longer confined to ‘just’ the regression family (although there is a new, improved machine-learning version of regression, too).</p>
+
+<p>The data scientist can choose from a dazzling array of algorithms. As an example, <a href="https://lazypredict.readthedocs.io/en/latest/"><code class="language-plaintext highlighter-rouge">lazypredict</code></a> will automatically fit <a href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html"><code class="language-plaintext highlighter-rouge">LinearSVC</code></a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html"><code class="language-plaintext highlighter-rouge">SGDClassifier</code></a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html?highlight=logisticregression#sklearn.linear_model.LogisticRegression"><code class="language-plaintext highlighter-rouge">LogisticRegression</code></a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html?highlight=randomforestclassifier#sklearn.ensemble.RandomForestClassifier"><code class="language-plaintext highlighter-rouge">RandomForestClassifier</code></a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html?highlight=gradientboostingclassifier#sklearn.ensemble.GradientBoostingClassifier"><code class="language-plaintext highlighter-rouge">GradientBoostingClassifier</code></a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html?highlight=gaussiannb#sklearn.naive_bayes.GaussianNB"><code class="language-plaintext highlighter-rouge">GaussianNB</code></a> and another <em>twenty-five more!</em></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">|</span> <span class="n">Model</span>                          <span class="o">|</span>   <span class="n">Accuracy</span> <span class="o">|</span>   <span class="n">Balanced</span> <span class="n">Accuracy</span> <span class="o">|</span>   <span class="n">ROC</span> <span class="n">AUC</span> <span class="o">|</span>   <span class="n">F1</span> <span class="n">Score</span> <span class="o">|</span>   <span class="n">Time</span> <span class="n">Taken</span> <span class="o">|</span>
+<span class="o">|</span><span class="p">:</span><span class="o">-------------------------------|-----------</span><span class="p">:</span><span class="o">|--------------------</span><span class="p">:</span><span class="o">|----------</span><span class="p">:</span><span class="o">|-----------</span><span class="p">:</span><span class="o">|-------------</span><span class="p">:</span><span class="o">|</span>
+<span class="o">|</span> <span class="n">LinearSVC</span>                      <span class="o">|</span>   <span class="mf">0.989474</span> <span class="o">|</span>            <span class="mf">0.987544</span> <span class="o">|</span>  <span class="mf">0.987544</span> <span class="o">|</span>   <span class="mf">0.989462</span> <span class="o">|</span>    <span class="mf">0.0150008</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">SGDClassifier</span>                  <span class="o">|</span>   <span class="mf">0.989474</span> <span class="o">|</span>            <span class="mf">0.987544</span> <span class="o">|</span>  <span class="mf">0.987544</span> <span class="o">|</span>   <span class="mf">0.989462</span> <span class="o">|</span>    <span class="mf">0.0109992</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">MLPClassifier</span>                  <span class="o">|</span>   <span class="mf">0.985965</span> <span class="o">|</span>            <span class="mf">0.986904</span> <span class="o">|</span>  <span class="mf">0.986904</span> <span class="o">|</span>   <span class="mf">0.985994</span> <span class="o">|</span>    <span class="mf">0.426</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">Perceptron</span>                     <span class="o">|</span>   <span class="mf">0.985965</span> <span class="o">|</span>            <span class="mf">0.984797</span> <span class="o">|</span>  <span class="mf">0.984797</span> <span class="o">|</span>   <span class="mf">0.985965</span> <span class="o">|</span>    <span class="mf">0.0120046</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">LogisticRegression</span>             <span class="o">|</span>   <span class="mf">0.985965</span> <span class="o">|</span>            <span class="mf">0.98269</span>  <span class="o">|</span>  <span class="mf">0.98269</span>  <span class="o">|</span>   <span class="mf">0.985934</span> <span class="o">|</span>    <span class="mf">0.0200036</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">LogisticRegressionCV</span>           <span class="o">|</span>   <span class="mf">0.985965</span> <span class="o">|</span>            <span class="mf">0.98269</span>  <span class="o">|</span>  <span class="mf">0.98269</span>  <span class="o">|</span>   <span class="mf">0.985934</span> <span class="o">|</span>    <span class="mf">0.262997</span>  <span class="o">|</span>
+<span class="o">|</span> <span class="n">SVC</span>                            <span class="o">|</span>   <span class="mf">0.982456</span> <span class="o">|</span>            <span class="mf">0.979942</span> <span class="o">|</span>  <span class="mf">0.979942</span> <span class="o">|</span>   <span class="mf">0.982437</span> <span class="o">|</span>    <span class="mf">0.0140011</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">CalibratedClassifierCV</span>         <span class="o">|</span>   <span class="mf">0.982456</span> <span class="o">|</span>            <span class="mf">0.975728</span> <span class="o">|</span>  <span class="mf">0.975728</span> <span class="o">|</span>   <span class="mf">0.982357</span> <span class="o">|</span>    <span class="mf">0.0350015</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">PassiveAggressiveClassifier</span>    <span class="o">|</span>   <span class="mf">0.975439</span> <span class="o">|</span>            <span class="mf">0.974448</span> <span class="o">|</span>  <span class="mf">0.974448</span> <span class="o">|</span>   <span class="mf">0.975464</span> <span class="o">|</span>    <span class="mf">0.0130005</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">LabelPropagation</span>               <span class="o">|</span>   <span class="mf">0.975439</span> <span class="o">|</span>            <span class="mf">0.974448</span> <span class="o">|</span>  <span class="mf">0.974448</span> <span class="o">|</span>   <span class="mf">0.975464</span> <span class="o">|</span>    <span class="mf">0.0429988</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">LabelSpreading</span>                 <span class="o">|</span>   <span class="mf">0.975439</span> <span class="o">|</span>            <span class="mf">0.974448</span> <span class="o">|</span>  <span class="mf">0.974448</span> <span class="o">|</span>   <span class="mf">0.975464</span> <span class="o">|</span>    <span class="mf">0.0310006</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">RandomForestClassifier</span>         <span class="o">|</span>   <span class="mf">0.97193</span>  <span class="o">|</span>            <span class="mf">0.969594</span> <span class="o">|</span>  <span class="mf">0.969594</span> <span class="o">|</span>   <span class="mf">0.97193</span>  <span class="o">|</span>    <span class="mf">0.033</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">GradientBoostingClassifier</span>     <span class="o">|</span>   <span class="mf">0.97193</span>  <span class="o">|</span>            <span class="mf">0.967486</span> <span class="o">|</span>  <span class="mf">0.967486</span> <span class="o">|</span>   <span class="mf">0.971869</span> <span class="o">|</span>    <span class="mf">0.166998</span>  <span class="o">|</span>
+<span class="o">|</span> <span class="n">QuadraticDiscriminantAnalysis</span>  <span class="o">|</span>   <span class="mf">0.964912</span> <span class="o">|</span>            <span class="mf">0.966206</span> <span class="o">|</span>  <span class="mf">0.966206</span> <span class="o">|</span>   <span class="mf">0.965052</span> <span class="o">|</span>    <span class="mf">0.0119994</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">HistGradientBoostingClassifier</span> <span class="o">|</span>   <span class="mf">0.968421</span> <span class="o">|</span>            <span class="mf">0.964739</span> <span class="o">|</span>  <span class="mf">0.964739</span> <span class="o">|</span>   <span class="mf">0.968387</span> <span class="o">|</span>    <span class="mf">0.682003</span>  <span class="o">|</span>
+<span class="o">|</span> <span class="n">RidgeClassifierCV</span>              <span class="o">|</span>   <span class="mf">0.97193</span>  <span class="o">|</span>            <span class="mf">0.963272</span> <span class="o">|</span>  <span class="mf">0.963272</span> <span class="o">|</span>   <span class="mf">0.971736</span> <span class="o">|</span>    <span class="mf">0.0130029</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">RidgeClassifier</span>                <span class="o">|</span>   <span class="mf">0.968421</span> <span class="o">|</span>            <span class="mf">0.960525</span> <span class="o">|</span>  <span class="mf">0.960525</span> <span class="o">|</span>   <span class="mf">0.968242</span> <span class="o">|</span>    <span class="mf">0.0119977</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">AdaBoostClassifier</span>             <span class="o">|</span>   <span class="mf">0.961404</span> <span class="o">|</span>            <span class="mf">0.959245</span> <span class="o">|</span>  <span class="mf">0.959245</span> <span class="o">|</span>   <span class="mf">0.961444</span> <span class="o">|</span>    <span class="mf">0.204998</span>  <span class="o">|</span>
+<span class="o">|</span> <span class="n">ExtraTreesClassifier</span>           <span class="o">|</span>   <span class="mf">0.961404</span> <span class="o">|</span>            <span class="mf">0.957138</span> <span class="o">|</span>  <span class="mf">0.957138</span> <span class="o">|</span>   <span class="mf">0.961362</span> <span class="o">|</span>    <span class="mf">0.0270066</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">KNeighborsClassifier</span>           <span class="o">|</span>   <span class="mf">0.961404</span> <span class="o">|</span>            <span class="mf">0.95503</span>  <span class="o">|</span>  <span class="mf">0.95503</span>  <span class="o">|</span>   <span class="mf">0.961276</span> <span class="o">|</span>    <span class="mf">0.0560005</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">BaggingClassifier</span>              <span class="o">|</span>   <span class="mf">0.947368</span> <span class="o">|</span>            <span class="mf">0.954577</span> <span class="o">|</span>  <span class="mf">0.954577</span> <span class="o">|</span>   <span class="mf">0.947882</span> <span class="o">|</span>    <span class="mf">0.0559971</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">BernoulliNB</span>                    <span class="o">|</span>   <span class="mf">0.950877</span> <span class="o">|</span>            <span class="mf">0.951003</span> <span class="o">|</span>  <span class="mf">0.951003</span> <span class="o">|</span>   <span class="mf">0.951072</span> <span class="o">|</span>    <span class="mf">0.0169988</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">LinearDiscriminantAnalysis</span>     <span class="o">|</span>   <span class="mf">0.961404</span> <span class="o">|</span>            <span class="mf">0.950816</span> <span class="o">|</span>  <span class="mf">0.950816</span> <span class="o">|</span>   <span class="mf">0.961089</span> <span class="o">|</span>    <span class="mf">0.0199995</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">GaussianNB</span>                     <span class="o">|</span>   <span class="mf">0.954386</span> <span class="o">|</span>            <span class="mf">0.949536</span> <span class="o">|</span>  <span class="mf">0.949536</span> <span class="o">|</span>   <span class="mf">0.954337</span> <span class="o">|</span>    <span class="mf">0.0139935</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">NuSVC</span>                          <span class="o">|</span>   <span class="mf">0.954386</span> <span class="o">|</span>            <span class="mf">0.943215</span> <span class="o">|</span>  <span class="mf">0.943215</span> <span class="o">|</span>   <span class="mf">0.954014</span> <span class="o">|</span>    <span class="mf">0.019989</span>  <span class="o">|</span>
+<span class="o">|</span> <span class="n">DecisionTreeClassifier</span>         <span class="o">|</span>   <span class="mf">0.936842</span> <span class="o">|</span>            <span class="mf">0.933693</span> <span class="o">|</span>  <span class="mf">0.933693</span> <span class="o">|</span>   <span class="mf">0.936971</span> <span class="o">|</span>    <span class="mf">0.0170023</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">NearestCentroid</span>                <span class="o">|</span>   <span class="mf">0.947368</span> <span class="o">|</span>            <span class="mf">0.933506</span> <span class="o">|</span>  <span class="mf">0.933506</span> <span class="o">|</span>   <span class="mf">0.946801</span> <span class="o">|</span>    <span class="mf">0.0160074</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">ExtraTreeClassifier</span>            <span class="o">|</span>   <span class="mf">0.922807</span> <span class="o">|</span>            <span class="mf">0.912168</span> <span class="o">|</span>  <span class="mf">0.912168</span> <span class="o">|</span>   <span class="mf">0.922462</span> <span class="o">|</span>    <span class="mf">0.0109999</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">CheckingClassifier</span>             <span class="o">|</span>   <span class="mf">0.361404</span> <span class="o">|</span>            <span class="mf">0.5</span>      <span class="o">|</span>  <span class="mf">0.5</span>      <span class="o">|</span>   <span class="mf">0.191879</span> <span class="o">|</span>    <span class="mf">0.0170043</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">DummyClassifier</span>                <span class="o">|</span>   <span class="mf">0.512281</span> <span class="o">|</span>            <span class="mf">0.489598</span> <span class="o">|</span>  <span class="mf">0.489598</span> <span class="o">|</span>   <span class="mf">0.518924</span> <span class="o">|</span>    <span class="mf">0.0119965</span> <span class="o">|</span>
+</code></pre></div></div>
+
+<p><strong><em>A list of classifiers from <code class="language-plaintext highlighter-rouge">lazypredict</code>’s documentation.</em></strong></p>
+
+<p>What a long way we have come …</p>
+
+<h3 id="-or-have-we">… Or have we?</h3>
+
+<p>My original analytical training was as a statistician. This means I have a bias, so please keep that in mind.</p>
+
+<p><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.SDJJ0y7zXX5HVwuZXBIaQwHaDf%26pid%3DApi&f=1" alt="A statistician quotation"></p>
+
+<p>With the classical, statistical techniques the focus was on <em>inference</em>; the new machine learning techniques focus on <em>prediction</em>. For a while there was a sentiment—and indeed, a junior aspiring data scientist said this to me—that so long as a model predicts well, it does not matter what happens inside the algorithm’s black box.</p>
+
+<p><em>The end justifies the means.</em></p>
+
+<p>Of course, now we know that it <em>does</em> matter what happens; we do need to be able to understand <em>what</em> we are doing.</p>
+
+<p>First, we need to be sure that an algorithm predicts well. If we do not understand the algorithm, how can we know this?</p>
+
+<p>We can look at the predictions made against our validation data set. (I am sure some business stakeholders relying on models performing well would be horrified to learn they might have been tested only against a couple of hundred records to make sure they behaved as expected.) But this will not tell us if we have made <a href="https://www.reuters.com/article/us-amazon-com-jobs-automation-insight/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women-idUSKCN1MK08G">a catastrophic error in the selection of our data</a>. It will not tell us if there are subsegments of our customer base for which the predictions do not work well. When the algorithm is a ‘black box’ which simply takes inputs and returns outputs with no clue as to its inner workings, the only debugging possible is to run many cases through and make sure the prediction is close to the truth.</p>
+
+<p>Second, we need to be able to explain <em>why</em> we made individual predictions. I am sure you would agree that it is not satistying to explain a refusal to accept a loan application on the grounds of ‘computer says no’. Neither the customer nor the customer service agent would have a reason to trust the algorithm. They are left to guessing why the application was not accepted.</p>
+
+<p><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.LHL6AyEugKKtdom-rCQTcQHaEV%26pid%3DApi&f=1" alt="Computer says no"></p>
+
+<p>But that is what we are asking people to do when we say ’trust the machine’. We are asking humans in a real process making operational decisions to use the predictions from a machine learning algorithm. Surely it would be in the interest of everyone invested in the model’s success to ensure the users trust and understand why the predictions are model. They need to get reasons of why this customer has been selected to receive this discount, or why a particular machine has been selected for maintenance. If they cannot trust it, adoption rates and compliance rates will remain low.</p>
+
+<p>Third, there is an increasing focus on models being well governed and responsible. Initiatives like <a href="https://www.oreilly.com/radar/how-will-the-gdpr-impact-machine-learning/">GDPR</a> prescribe how machine learning is governed, how users’ consent is managed and how interpretable a model’s predictions are. In parallel, there is increasing focus on <a href="https://consult.industry.gov.au/strategic-policy/artificial-intelligence-ethics-framework/supporting_documents/ArtificialIntelligenceethicsframeworkdiscussionpaper.pdf">ethical AI</a> and <a href="https://www.microsoft.com/en-us/ai/responsible-ai?activetab=pivot1:primaryr6">responsible AI</a>, which include a set of principles to ensure machine learning models used by organisations are</p>
+
+<ul>
+  <li>fair;</li>
+  <li>reliable and safe;</li>
+  <li>inclusive;</li>
+  <li>transparent;</li>
+  <li>private and secure; and</li>
+  <li>have clear accountability.</li>
+</ul>
+
+<h3 id="what-have-we-lost">What have we lost?</h3>
+
+<p>With the classical statistical techniques of yore, we had measure of uncretainty around the parameters of the algorithm. We could tell where it was accurate and where it was less so. We could calculate the predictions with a modest amount of matrix mathematics.</p>
+
+<p>The new techniques kind of forgot about these things. Or they added them as an afterthought.</p>
+
+<p>Now, though, there is something of a renaissance brewing under the name of XAI—explainable AI. XAI typically refers to a suite of tools and technique that let us <em>interpret</em> fitted models and <em>explain</em> predictions of almost any model.</p>
+
+<h3 id="shap">SHAP</h3>
+
+<p>The new hero of the day is a set of libraries called <a href="https://shap.readthedocs.io/en/latest/">SHAP</a>—<strong>SH</strong>apley <strong>a</strong>dditive <strong>p</strong>redictions.<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">2</a></sup></p>
+
+<p>What SHAP does, in essence, is to run a series of test observations through a model’s prediction algorithm to see what happens. The reason its use is increasing so rapidly is that it outputs a series of additive outputs. (You know, like the regression models do.)</p>
+
+<p>And additive outputs are easy to interpret. You can add them up, take the mean (a statistician’s way of saying ‘average’); they bhave sensibly and intuitively.</p>
+
+<h3 id="back-on-board-the-titanic">Back on board the <em>Titanic</em>
+</h3>
+
+<p>So to show you how we can apply SHAP to the same data set as before, I used the Python <a href="https://xgboost.readthedocs.io/en/latest/python/python_api.html#module-xgboost.sklearn"><code class="language-plaintext highlighter-rouge">XGBClassifier</code></a> against the data. I used the default parameters and the same feature transformations I used with the logistic regression model.</p>
+
+<p>Instead of an analysis of deviance table, all the model fitting process gives me is a series of sequential trees that reduce the variation of error at each iteration. <a href="https://en.wikipedia.org/wiki/Gradient_boosting">This is what GBMs do.</a> I can find out which features contribute to the model using one of the ‘afterthought’ techniques included with the algorithm.</p>
+
+<p><img src="https://github.com/james-pearce/titanic-xai/blob/main/python/images/feature-importance.png" alt="feature-importance"></p>
+
+<p><strong><em>The most important features as shown by the GBM afterthought.</em></strong></p>
+
+<p>Note that in what is produced above, we get no sense of the bounds of error or variation.</p>
+
+<p>To get some more information, we can turn to SHAP. It turns out that SHAP has a similar plot that also shows the individual points in the set of test observations we have used.</p>
+
+<p><img src="https://github.com/james-pearce/titanic-xai/blob/main/python/images/shap-summary-plot.png" alt="shap-summary-plot"></p>
+
+<p>This is a bit more informative. We can see perfect separation on the basis of <code class="language-plaintext highlighter-rouge">Sex</code>; that there are some bad values of <code class="language-plaintext highlighter-rouge">Pclass</code>; that being old was not a good thing.</p>
+
+<h3 id="explaining-predictions-1">Explaining predictions</h3>
+
+<p>As we did before, we can look at explaining individual predictions. SHAP can explain the prediction for the passenger most likely to survive.</p>
+
+<p><img src="https://github.com/james-pearce/titanic-xai/blob/main/python/images/best-passenger.png" alt="best-passenger"></p>
+
+<p>Now that chart is easy to understand (for a data scientist).</p>
+
+<p>Similarly for the unluckiest passenger.</p>
+
+<p><img src="https://github.com/james-pearce/titanic-xai/blob/main/python/images/worst-passenger.png" alt="worst-passenger"></p>
+
+<blockquote>
+  <p><strong>Note</strong>: with a bit more mathematics, we could have represented the outputs of the logistic regression in exactly the same way.</p>
+</blockquote>
+
+<h2 id="comparing-the-old-and-the-new">Comparing the old and the new</h2>
+
+<p>So now you have seen what we used to do and what we can do now with SHAP.</p>
+
+<p>“So,” I hear you saying, “you are building a second, additive and interpretable model to explain a model that used a technique that is inherently difficult to explain.”</p>
+
+<p>Yes, that is right—now we have two models. One to predict, and one to explain the predictions and interpret the model.</p>
+
+<p>“Wow,” you must be thinking, “these new-fangled machine learning techniques must be <em>really something</em> for you to add the complexity of having two models instead of one.”</p>
+
+<h2 id="back-to-you-kaggle">Back to you, Kaggle</h2>
+
+<p>To show you how far we have come, I tested these models on Kaggle (and there are many, many models on Kaggle that predict better on this data set). Kaggle provides a test set of data that contains all the variables of the training data set, but does not include the information on whether an individual survived or not. Kaggle uses this unseen information to calculate a performance score. It uses a measure of accuracy, and higher means better.</p>
+
+<p>First I ran the <code class="language-plaintext highlighter-rouge">XGBClassifier</code> model’s predictions through Kaggle. The result: 0.734 accuracy.</p>
+
+<p>Next I tried the logistic regression. The result: 0.754 accuracy.</p>
+
+<p>Looks like we need to do more work to get the new, fancy machine learning techniques for little gain in this instance.</p>
+
+<hr>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Increasingly data scientists and the systems that use the models produced by data scientists are under pressure to be well-governed, interpretable and well-understood. Their predictions need to be, well, predictable.</p>
+
+<p>The SHAP library is very useful and gives us insight into models that would otherwise have been obscured from our view. But for some use cases, you are better off using the classical techniques and understanding your model as you develop it. The alternative road can be a lot of complexity and effort for less understanding and no gain in prediction accuracy.</p>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>A prediction that will be really helpful if you want to book safe passage on <em>Titanic II</em>’s maiden voyage. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>An in-depth treatment of this can be found in <a href="https://christophm.github.io/interpretable-ml-book/">Christoph Molnar’s e-Book <em>Interpretable Machine Learning</em></a>. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div>
+<a class="u-url" href="/machine-learning/xai/shap/2021/06/08/explainable-ai.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Data Science in the Wild</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Data Science in the Wild</li>
+<li><a class="u-email" href="mailto:jamespearce@3crownsconsulting.com.au">jamespearce@3crownsconsulting.com.au</a></li>
+</ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+<ul class="social-media-list"><li><a href="https://github.com/james-pearce"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">james-pearce</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Better techniques for getting more from your data.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
