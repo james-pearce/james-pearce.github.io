@@ -1,13 +1,11 @@
 ---
 layout: post
-title:  "Why we do _and don't_ need explainable AI"
+title:  "Why we do _and do not_ need explainable AI"
 date:   2021-06-10 09:00:00 +1100
 categories: machine-learning XAI SHAP
 ---
 
-# Why we do _and don’t_ need explainable AI
-
-> _Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think._
+_Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think._
 
 **A black-box model is no longer good enough for your data scientists, your business or your customers.**
 
@@ -355,6 +353,8 @@ First I ran the `XGBClassifier` model’s predictions through Kaggle. The result
 Next I tried the logistic regression. The result: 0.754 accuracy.
 
 Looks like we need to do more work to get the new, fancy machine learning techniques for little gain in this instance.
+
+---
 
 ## Conclusion
 
