@@ -6,9 +6,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Why we do and do not need explainable AI | Data Science in the Wild</title>
+<title>Why we do—and don’t—need explainable AI | Data Science in the Wild</title>
 <meta name="generator" content="Jekyll v3.9.0">
-<meta property="og:title" content="Why we do and do not need explainable AI">
+<meta property="og:title" content="Why we do—and don’t—need explainable AI">
 <meta property="og:locale" content="en_US">
 <meta name="description" content="Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think.">
 <meta property="og:description" content="Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think.">
@@ -18,7 +18,7 @@
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2021-06-08T22:00:00+00:00">
 <script type="application/ld+json">
-{"description":"Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think.","headline":"Why we do and do not need explainable AI","dateModified":"2021-06-08T22:00:00+00:00","datePublished":"2021-06-08T22:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.3crownsconsulting.com.au/machine-learning/xai/shap/2021/06/08/explainable-ai.html"},"url":"http://www.3crownsconsulting.com.au/machine-learning/xai/shap/2021/06/08/explainable-ai.html","@context":"https://schema.org"}</script>
+{"description":"Why explainable AI (known as XAI) is becoming a must-have component of data science and why we may not have come as far as we think.","headline":"Why we do—and don’t—need explainable AI","dateModified":"2021-06-08T22:00:00+00:00","datePublished":"2021-06-08T22:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.3crownsconsulting.com.au/machine-learning/xai/shap/2021/06/08/explainable-ai.html"},"url":"http://www.3crownsconsulting.com.au/machine-learning/xai/shap/2021/06/08/explainable-ai.html","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/main.css">
 <link type="application/atom+xml" rel="alternate" href="http://www.3crownsconsulting.com.au/feed.xml" title="Data Science in the Wild">
@@ -47,7 +47,7 @@
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Why we do _and do not_ need explainable AI</h1>
+    <h1 class="post-title p-name" itemprop="name headline">Why we do—and don't—need explainable AI</h1>
     <p class="post-meta">
       <time class="dt-published" datetime="2021-06-08T22:00:00+00:00" itemprop="datePublished">Jun 8, 2021
       </time></p>
@@ -68,7 +68,7 @@
 
 <h2 id="the-new-kid-in-town">The new kid in town</h2>
 
-<p>Then things changed. They got more sophisticated and more complex (possibly two words meaning the same thing.) We were given a choice of many different algorithms, such as <a href="https://scikit-learn.org/stable/modules/neural_networks_supervised.html">neural networks</a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">random forests</a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html">gradient boosting machines</a>, <a href="https://scikit-learn.org/stable/modules/svm.html">support vector machines</a> and <a href="https://scikit-learn.org/stable/modules/ensemble.html">ensemble methods</a>. We could now use hundreds — or even thousands — of features. In many cases our algorithms would select the best features and even pre-process them, meaning we no longer had to hand-craft them. We started to use a whole bunch of techniques that, when combined, would wring every drop of predictive power from our models and data.</p>
+<p>Then things changed. They got more sophisticated and more complex (possibly two words meaning the same thing). We were given a choice of many different algorithms, such as <a href="https://scikit-learn.org/stable/modules/neural_networks_supervised.html">neural networks</a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">random forests</a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html">gradient boosting machines</a>, <a href="https://scikit-learn.org/stable/modules/svm.html">support vector machines</a> and <a href="https://scikit-learn.org/stable/modules/ensemble.html">ensemble methods</a>. We could now use hundreds — or even thousands — of features. In many cases our algorithms would select the best features and even pre-process them, meaning we no longer had to hand-craft them. We started to use a whole bunch of techniques that, when combined, would wring every drop of predictive power from our models and data.</p>
 
 <p>The mantra was sometimes heard that as long as the model predicted well, why should we care about how the model arrived at its predictions?</p>
 
@@ -87,16 +87,16 @@
 <blockquote>
   <p><strong>Spoiler alert</strong></p>
 
-  <p>The ship hits an iceberg and sinks.</p>
+  <h2 id="the-ship-hits-an-iceberg-and-sinks">The ship hits an iceberg and sinks.</h2>
 </blockquote>
 
 <p>We want to build a model that will predict who would survive on the <em>Titanic</em>.<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup></p>
 
-<p><img src="/Users/jamespearce/repos/titanic/images/modelling.svg" alt="modelling"></p>
+<p><img src="/assets/modelling.svg" alt="modelling"></p>
 
-<p>To build a model, I use a logistic regression in <a href="http://cran.r-project.org">R</a> using the <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/glm"><code class="language-plaintext highlighter-rouge">glm</code></a> package.</p>
+<p>To build a model, I use a logistic regression in <a href="http://cran.r-project.org">R</a> using the <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/glm"><code class="language-plaintext highlighter-rouge">glm</code></a> package. You can see my code <a href="https://github.com/james-pearce/titanic-xai">here</a>.</p>
 
-<p>We build our model (you can see my code <a href="https://github.com/james-pearce/titanic-xai">here</a>). Comparing our predictions with what transpired, we get the following misclassification table (or <em>confusion matrix</em>).</p>
+<p>Comparing our predictions with what transpired, we get the following misclassification table (or <em>confusion matrix</em>).</p>
 
 <table>
   <thead>
@@ -125,7 +125,7 @@
   </tbody>
 </table>
 
-<p>If you add up the numbers, you can see this model gives an accuracy on the data set it was trained on of 82.%. This is the number of times we made a prediction that matched with what actually happened.</p>
+<p>If you add up the numbers, you can see this model gives an accuracy on the data set it was trained on of 82%. This is the number of times we made a prediction that matched with what actually happened.</p>
 
 <p>Great! Our model is somewhat accurate. But it does not help me in my quest for surviving when <em>Titanic II</em> hits an iceberg. For that we have to look into the internals of the fitted model and do some simple maths.</p>
 
@@ -518,7 +518,7 @@
 
 <p>What SHAP does, in essence, is to run a series of test observations through a model’s prediction algorithm to see what happens. The reason its use is increasing so rapidly is that it outputs a series of additive outputs. (You know, like the regression models do.)</p>
 
-<p>And additive outputs are easy to interpret. You can add them up, take the mean (a statistician’s way of saying ‘average’); they bhave sensibly and intuitively.</p>
+<p>And additive outputs are easy to interpret. You can add them up, take the mean (a statistician’s way of saying ‘average’); they behave sensibly and intuitively.</p>
 
 <h3 id="back-on-board-the-titanic">Back on board the <em>Titanic</em>
 </h3>
@@ -527,7 +527,7 @@
 
 <p>Instead of an analysis of deviance table, all the model fitting process gives me is a series of sequential trees that reduce the variation of error at each iteration. <a href="https://en.wikipedia.org/wiki/Gradient_boosting">This is what GBMs do.</a> I can find out which features contribute to the model using one of the ‘afterthought’ techniques included with the algorithm.</p>
 
-<p><img src="https://github.com/james-pearce/titanic-xai/blob/main/python/images/feature-importance.png" alt="feature-importance"></p>
+<p><img src="/assets/feature-importance.png" alt="feature-importance"></p>
 
 <p><strong><em>The most important features as shown by the GBM afterthought.</em></strong></p>
 
@@ -535,7 +535,7 @@
 
 <p>To get some more information, we can turn to SHAP. It turns out that SHAP has a similar plot that also shows the individual points in the set of test observations we have used.</p>
 
-<p><img src="https://github.com/james-pearce/titanic-xai/blob/main/python/images/shap-summary-plot.png" alt="shap-summary-plot"></p>
+<p><img src="/assets/shap-summary-plot.png" alt="shap-summary-plot"></p>
 
 <p>This is a bit more informative. We can see perfect separation on the basis of <code class="language-plaintext highlighter-rouge">Sex</code>; that there are some bad values of <code class="language-plaintext highlighter-rouge">Pclass</code>; that being old was not a good thing.</p>
 
@@ -543,13 +543,13 @@
 
 <p>As we did before, we can look at explaining individual predictions. SHAP can explain the prediction for the passenger most likely to survive.</p>
 
-<p><img src="https://github.com/james-pearce/titanic-xai/blob/main/python/images/best-passenger.png" alt="best-passenger"></p>
+<p><img src="/assets/best-passenger.png" alt="best-passenger"></p>
 
 <p>Now that chart is easy to understand (for a data scientist).</p>
 
 <p>Similarly for the unluckiest passenger.</p>
 
-<p><img src="https://github.com/james-pearce/titanic-xai/blob/main/python/images/worst-passenger.png" alt="worst-passenger"></p>
+<p><img src="/assets/worst-passenger.png" alt="worst-passenger"></p>
 
 <blockquote>
   <p><strong>Note</strong>: with a bit more mathematics, we could have represented the outputs of the logistic regression in exactly the same way.</p>
@@ -573,7 +573,15 @@
 
 <p>Next I tried the logistic regression. The result: 0.754 accuracy.</p>
 
-<p>Looks like we need to do more work to get the new, fancy machine learning techniques for little gain in this instance.</p>
+<p>Looks like we need to do more work to explain our new, fancy machine learning techniques but get little gain in this instance.</p>
+
+<p>The takeaway might be to think about your model development lifecycle:</p>
+
+<ol>
+  <li>build an interpretable model using classical, interpretable techniques;</li>
+  <li>Once you are happy with this, use a modern machine learning technique to see if you get a significant gain in performance; and</li>
+  <li>If you do, consider whether you want to spend more time tweaking the interpretable model or explaining the machine learning model. Most times you won’t.</li>
+</ol>
 
 <hr>
 
